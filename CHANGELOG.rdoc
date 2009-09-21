@@ -1,3 +1,8 @@
 === 1.0.0 / 2009-09-21
 
 * Birthday!
+
+=== 1.0.1 / 2009-09-21
+
+* Doco updates. [Review by Evan]
+* Don't modify Entry#options on install. [Review by Evan]
