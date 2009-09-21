@@ -30,7 +30,7 @@ YMMV, but I haven't tried Isolate with anything older than RubyGems
 
 === Defining Your Isolated Environment
 
-It'spretty easy: <tt>gem</tt> is similar to RubyGems' method of the
+It's pretty easy: <tt>gem</tt> is similar to RubyGems' method of the
 same name. Version specifiers are optional, and any hash args tacked
 on to the end are passed through to Gem::DependencyInstaller as flags.
 
