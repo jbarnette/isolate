@@ -60,7 +60,7 @@ class Isolate
     @path         = path
     @verbose      = options[:verbose]
 
-    instance_eval &block if block_given?
+    instance_eval(&block) if block_given?
   end
 
   def activate environment = nil # :nodoc:
