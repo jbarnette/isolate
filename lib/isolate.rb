@@ -166,10 +166,10 @@ class Isolate
         warn "#{progress} Isolating #{e.name} (#{e.requirement})."
       end
 
+      options     = e.options.dup.merge :install_dir => path
       old         = Gem.sources.dup
-      source      = e.options.delete :source
+      source      = options.delete :source
       Gem.sources = Array(source) if source
-      options     = e.options.merge :install_dir => path
       installer   = Gem::DependencyInstaller.new options
 
       installer.install e.name, e.requirement
