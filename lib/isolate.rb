@@ -7,7 +7,7 @@ require "rubygems/requirement"
 
 class Isolate
   Entry   = Struct.new :name, :requirement, :environments,  :options # :nodoc:
-  VERSION = "1.0.0" # :nodoc:
+  VERSION = "1.0.1" # :nodoc:
 
   attr_reader :entries # :nodoc:
 
