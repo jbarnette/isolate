@@ -11,6 +11,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   def teardown
     @isolate.disable
     Isolate.instance.disable if Isolate.instance
+    Gem::DependencyInstaller.reset_last_install
     FileUtils.rm_rf "tmp/gems"
   end
 
@@ -42,7 +43,7 @@ class TestIsolate < MiniTest::Unit::TestCase
     @isolate.gem "rubyforge"
 
     @isolate.environment "borg" do
-      @isolate.gem "hoe"
+      gem "hoe"
     end
 
     @isolate.activate
@@ -56,7 +57,7 @@ class TestIsolate < MiniTest::Unit::TestCase
     @isolate.gem "rubyforge"
 
     @isolate.environment "borg" do
-      @isolate.gem "hoe"
+      gem "hoe"
     end
 
     @isolate.activate "borg"
@@ -74,6 +75,14 @@ class TestIsolate < MiniTest::Unit::TestCase
 
     assert_equal ["foo", Gem::Requirement.default],
       Gem::DependencyInstaller.last_install
+  end
+
+  def test_activate_install_environment
+    @isolate = Isolate.new "tmp/gems", :install => true
+    @isolate.environment(:nope) { gem "foo" }
+
+    @isolate.activate
+    assert_nil Gem::DependencyInstaller.last_install
   end
 
   def test_activate_ret
@@ -117,17 +126,6 @@ class TestIsolate < MiniTest::Unit::TestCase
     assert_equal [@isolate.path], Gem.path
   end
 
-  def test_enable_block
-    path = Gem.path.dup
-    refute_equal [@isolate.path], Gem.path
-
-    @isolate.enable do
-      assert_equal [@isolate.path], Gem.path
-    end
-
-    assert_equal path, Gem.path
-  end
-
   def test_enable_ret
     assert_equal @isolate, @isolate.enable
   end
@@ -136,10 +134,10 @@ class TestIsolate < MiniTest::Unit::TestCase
     @isolate.gem "none"
 
     @isolate.environment "test", "ci" do
-      @isolate.gem "test-ci"
+      gem "test-ci"
 
-      @isolate.environment "production" do
-        @isolate.gem "test-ci-production"
+      environment "production" do
+        gem "test-ci-production"
       end
     end
 
@@ -188,6 +186,7 @@ end
 class Gem::DependencyInstaller
   @@last_install = nil
   def self.last_install; @@last_install end
+  def self.reset_last_install; @@last_install = nil end
 
   alias old_install install
 
