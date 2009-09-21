@@ -4,9 +4,12 @@
 
 == Description
 
-Isolate is a very simple RubyGems sandbox. It restricts GEM_PATH and
-GEM_HOME, and provides a DSL for expressing your code's runtime Gem
-dependencies.
+Isolate is a very simple RubyGems sandbox. It provides a way to
+express and install your code's Gem dependencies.
+
+When Isolate runs, it uses GEM_HOME, GEM_PATH, and a few other tricks
+to completely separate your code from the system's RubyGems
+configuration, leaving it free to run in blissful solitude.
 
 While Isolate doesn't make any assumptions about what sort of code
 you're writing, it was extracted from a few Rails apps, so it's
@@ -27,11 +30,11 @@ YMMV, but I haven't tried Isolate with anything older than RubyGems
 
 === Defining Your Isolated Environment
 
-The DSL's pretty easy: <tt>gem</tt> is similar to RubyGems'
-identically-named method. Version specifiers are optional, and any
-hash args tacked on to the end are passed through to
-Gem::DependencyInstaller as flags.
+It'spretty easy: <tt>gem</tt> is similar to RubyGems' method of the
+same name. Version specifiers are optional, and any hash args tacked
+on to the end are passed through to Gem::DependencyInstaller as flags.
 
+    require "rubygems"
     require "isolate"
 
     Isolate.gems "vendor/isolated" do
@@ -83,6 +86,7 @@ you want, you could just as easily put them in
 <tt>config/{gems,deps,whatever}.rb</tt>, just make sure it's loaded in
 the preinitializer:
 
+    require "rubygems"
     require "isolate"
 
     Isolate.gems "vendor/isolated", :install => true, :verbose => true do
