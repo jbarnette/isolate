@@ -1,0 +1,10 @@
+.autotest
+CHANGELOG.rdoc
+Manifest.txt
+README.rdoc
+Rakefile
+lib/isolate.rb
+test/fixtures/with-hoe/specifications/hoe-2.3.3.gemspec
+test/fixtures/with-hoe/specifications/rake-0.8.7.gemspec
+test/fixtures/with-hoe/specifications/rubyforge-1.0.4.gemspec
+test/test_isolate.rb
