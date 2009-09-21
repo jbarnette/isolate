@@ -18,7 +18,7 @@ full-featured Gem bundler, check out Yehuda Katz and Carl Lerche's
 Bundler[http://github.com/wycats/bundler]: It does a lot of fancy AOT
 dependency resolution, supports non-gem resources, and is probably a
 better fit for you. For a widely used Gem manager and installer, check
-out Chad Wooley's GemInstaller[http://geminstaller.rubyforge.org].
+out Chad Woolley's GemInstaller[http://geminstaller.rubyforge.org].
 
 YMMV, but I haven't tried Isolate with anything older than RubyGems
 1.3.5.
