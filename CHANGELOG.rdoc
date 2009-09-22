@@ -1,3 +1,15 @@
+=== 1.1.0 / 2009-09-22
+
+* Breaking change: Install by default.
+
+=== 1.0.2 / 2009-09-21
+
+* Fix some README typos.
+* Add Entry#matches? to encapsulate activation and installation decisions.
+* Remove block form of Isolate#enable, it's unused.
+* Properly instance_eval Isolate#environment blocks.
+* Reset stubs properly after tests (Random test order FTFW).
+
 === 1.0.1 / 2009-09-21
 
 * Doco updates. [Review by Evan]
@@ -6,4 +18,3 @@
 === 1.0.0 / 2009-09-21
 
 * Birthday!
-

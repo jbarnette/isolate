@@ -6,8 +6,15 @@ require "rubygems/requirement"
 # rationale, limitations, and examples.
 
 class Isolate
-  Entry   = Struct.new :name, :requirement, :environments,  :options # :nodoc:
-  VERSION = "1.0.1" # :nodoc:
+
+  # :nodoc:
+  class Entry < Struct.new(:name, :requirement, :environments, :options)
+    def matches? environment
+      environments.empty? || environments.include?(environment)
+    end
+  end
+
+  VERSION = "1.1.0" # :nodoc:
 
   attr_reader :entries # :nodoc:
 
@@ -27,7 +34,7 @@ class Isolate
   #
   # Option defaults:
   #
-  #    { :install => false, :verbose => false }
+  #    { :install => true, :verbose => true }
 
   def self.gems path, options = {}, &block
     @@instance = new path, options, &block
@@ -56,9 +63,9 @@ class Isolate
     @enabled      = false
     @entries      = []
     @environments = []
-    @install      = options[:install]
+    @install      = options.key?(:install) ? options[:install] : true
     @path         = path
-    @verbose      = options[:verbose]
+    @verbose      = options.key?(:verbose) ? options[:verbose] : true
 
     instance_eval(&block) if block_given?
   end
@@ -70,9 +77,7 @@ class Isolate
     install environment if install?
 
     entries.each do |e|
-      if e.environments.empty? || e.environments.include?(env)
-        Gem.activate e.name, *e.requirement.as_list
-      end
+      Gem.activate e.name, *e.requirement.as_list if e.matches? env
     end
 
     self
@@ -93,7 +98,7 @@ class Isolate
     self
   end
 
-  def enable &block # :nodoc:
+  def enable # :nodoc:
     return self if enabled?
 
     @old_gem_path  = ENV["GEM_PATH"]
@@ -113,7 +118,6 @@ class Isolate
     self.class.refresh
 
     @enabled = true
-    begin; yield; ensure disable end if block_given?
     self
   end
 
@@ -128,7 +132,7 @@ class Isolate
     @environments.concat environments.map { |e| e.to_s }
 
     begin
-      yield
+      instance_eval(&block)
     ensure
       @environments = old
     end
@@ -155,8 +159,7 @@ class Isolate
     env = environment.to_s if environment
 
     installable = entries.select do |e|
-      !Gem.available?(e.name, *e.requirement.as_list) &&
-        (env.nil? || e.environments.include?(env))
+      !Gem.available?(e.name, *e.requirement.as_list) && e.matches?(env)
     end
 
     installable.each_with_index do |e, i|
