@@ -1,3 +1,7 @@
+=== 1.1.0 / 2009-09-22
+
+* Breaking change: Install by default.
+
 === 1.0.2 / 2009-09-21
 
 * Fix some README typos.
@@ -14,4 +18,3 @@
 === 1.0.0 / 2009-09-21
 
 * Birthday!
-
