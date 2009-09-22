@@ -3,6 +3,7 @@ CHANGELOG.rdoc
 Manifest.txt
 README.rdoc
 Rakefile
+lib/hoe/isolate.rb
 lib/isolate.rb
 test/fixtures/with-hoe/specifications/hoe-2.3.3.gemspec
 test/fixtures/with-hoe/specifications/rake-0.8.7.gemspec
