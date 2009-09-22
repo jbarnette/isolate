@@ -34,7 +34,7 @@ class Isolate
   #
   # Option defaults:
   #
-  #    { :install => false, :verbose => false }
+  #    { :install => true, :verbose => true }
 
   def self.gems path, options = {}, &block
     @@instance = new path, options, &block
@@ -63,9 +63,9 @@ class Isolate
     @enabled      = false
     @entries      = []
     @environments = []
-    @install      = options[:install]
+    @install      = options.key?(:install) ? options[:install] : true
     @path         = path
-    @verbose      = options[:verbose]
+    @verbose      = options.key?(:verbose) ? options[:verbose] : true
 
     instance_eval(&block) if block_given?
   end

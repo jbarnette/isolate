@@ -5,7 +5,7 @@ require "isolate"
 
 class TestIsolate < MiniTest::Unit::TestCase
   def setup
-    @isolate = Isolate.new "tmp/gems"
+    @isolate = Isolate.new "tmp/gems", :install => false, :verbose => false
   end
 
   def teardown
@@ -66,7 +66,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_install
-    @isolate = Isolate.new "tmp/gems", :install => true
+    @isolate = Isolate.new "tmp/gems", :install => true, :verbose => false
 
     @isolate.gem "foo"
 
@@ -172,12 +172,13 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_initialize_options
-    refute @isolate.install?
-    refute @isolate.verbose?
-
-    i = Isolate.new "foo/gems", :install => true, :verbose => true
+    i = Isolate.new "foo/gems"
     assert i.install?
     assert i.verbose?
+
+    i = Isolate.new "foo/gems", :install => false, :verbose => false
+    refute i.install?
+    refute i.verbose?
   end
 end
 

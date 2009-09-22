@@ -67,13 +67,18 @@ your environment.
 
 === Installing Isolated Gems
 
-    Isolate.gems "vendor/isolated", :install => true, :verbose => true do
-      gem "intercession"
+By default, Isolate will install your gems automatically. You can pass
+<tt>:install</tt> and <tt>:verbose</tt> options to control things:
+
+    # install, but quietly
+    Isolate.gems "vendor/isolated" :verbose => false do
+      ...
     end
 
-Isolate can install your gems automatically. Just pass an
-<tt>:install</tt> option to <tt>Isolate.gems</tt>. Pass
-<tt>:verbose</tt> if you want to see what's going on.
+    # don't install
+    Isolate.gems "vendor/isolated", :install => false do
+      ...
+    end
 
 === A Rails Example
 
@@ -89,7 +94,7 @@ the preinitializer:
     require "rubygems"
     require "isolate"
 
-    Isolate.gems "vendor/isolated", :install => true, :verbose => true do
+    Isolate.gems "vendor/isolated" do
       gem "rails", "= 2.2.2"
 
       # async emails!
