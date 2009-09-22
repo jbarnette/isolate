@@ -153,7 +153,7 @@ class Isolate
 
     entry = Entry.new name, requirement, @environments.dup,  options
 
-    @entries << entry
+    entries << entry
     entry
   end
 
