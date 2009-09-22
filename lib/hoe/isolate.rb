@@ -1,7 +1,7 @@
 require "rubygems"
 require "isolate"
 
-module Hoe # :nodoc:
+class Hoe # :nodoc:
 
   # This module is a Hoe plugin. You can set its attributes in your
   # Rakefile's Hoe spec, like this:
@@ -29,7 +29,7 @@ module Hoe # :nodoc:
     end
 
     def define_isolate_tasks # :nodoc:
-      i = Isolate.new self.isolate_dir
+      i = ::Isolate.new self.isolate_dir
 
       # TODO: consider sneakily adding test lib deps if they don't exist
       (self.extra_deps + self.extra_dev_deps).each do |name, version|
