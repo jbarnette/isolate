@@ -143,6 +143,24 @@ right below where <tt>boot.rb</tt> is required:
 
 Pow. Isolated!
 
+=== A Library Example
+
+If you're using Hoe[http://blog.zenspider.com/hoe] to manage your
+library, you can use Isolate's Hoe plugin to automatically install
+your lib's development, runtime, and test dependencies without
+polluting your system RubyGems, and run your tests/specs in total
+isolation.
+
+Assuming you have a recent Hoe and isolate's installed, it's as simple
+as putting:
+
+    Hoe.plugin :isolate
+
+before the <tt>Hoe.spec</tt> call in your <tt>Rakefile</tt>.
+
+If you're not using Hoe, you can just do a regular
+<tt>Isolate.gems</tt> block at the top of your Rakefile.
+
 == Installation
 
     $ gem install isolate

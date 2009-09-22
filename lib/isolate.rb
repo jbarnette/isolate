@@ -7,9 +7,11 @@ require "rubygems/requirement"
 
 class Isolate
 
-  # :nodoc:
+  # An isolated Gem, with requirement, environment restrictions, and
+  # installation options. Internal use only.
+
   class Entry < Struct.new(:name, :requirement, :environments, :options)
-    def matches? environment
+    def matches? environment # :nodoc:
       environments.empty? || environments.include?(environment)
     end
   end
