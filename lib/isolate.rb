@@ -171,14 +171,18 @@ class Isolate
         warn "#{progress} Isolating #{e.name} (#{e.requirement})."
       end
 
-      options     = e.options.dup.merge :install_dir => path
       old         = Gem.sources.dup
+      options     = e.options.merge :install_dir => path
       source      = options.delete :source
+      args        = options.delete :args
       Gem.sources = Array(source) if source
       installer   = Gem::DependencyInstaller.new options
 
+      Gem::Command.build_args = args if args
       installer.install e.name, e.requirement
+
       Gem.sources = old
+      Gem::Command.build_args = nil if args # omg eric... you are so lame
     end
 
     Gem.source_index.refresh!
