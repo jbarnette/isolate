@@ -182,7 +182,7 @@ class Isolate
       installer.install e.name, e.requirement
 
       Gem.sources = old
-      Gem::Command.build_args = nil if args # omg eric... you are so lame
+      Gem::Command.build_args = nil if args
     end
 
     Gem.source_index.refresh!

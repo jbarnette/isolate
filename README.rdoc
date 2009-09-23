@@ -31,15 +31,14 @@ YMMV, but I haven't tried Isolate with anything older than RubyGems
 === Defining Your Isolated Environment
 
 It's pretty easy: <tt>gem</tt> is similar to RubyGems' method of the
-same name. Version specifiers are optional, and any hash args tacked
-on to the end are passed through to Gem::DependencyInstaller as flags.
+same name. Version specifiers are optional.
 
     require "rubygems"
     require "isolate"
 
     Isolate.gems "vendor/isolated" do
       gem "johnson", "~> 1.1" # or maybe...
-      gem "jbarnette-johnson", :source => "http://gems.github.com"
+      gem "jbarnette-johnson"
     end
 
 At the end of the <tt>Isolate.gems</tt> block, you're completely
@@ -64,6 +63,18 @@ Unsurprisingly, the <tt>mocha</tt> gem will only be activated in the
 <tt>test</tt> and <tt>cucumber</tt> environments. See the Rails
 example below for an example of how to use <tt>RAILS_ENV</tt> to set
 your environment.
+
+=== Options
+
+Any trailing hash args to <tt>gem</tt> are passed to
+<tt>Gem::DependencyInstaller</tt> as options. There are two special
+exceptions, <tt>:source</tt> and <tt>:args</tt>.
+
+    # explicitly specify gem source
+    gem "jbarnette-johnson", :source => "http://gems.github.com"
+
+    # pass gem install args (the part after the '--')
+    gem "pg", :args => "ARCHFLAGS='-arch x86_64'"
 
 === Installing Isolated Gems
 
