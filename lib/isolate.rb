@@ -130,14 +130,12 @@ class Isolate
   # Restricts +gem+ calls inside +block+ to a set of +environments+.
 
   def environment *environments, &block
-    old = @environments.dup
-    @environments.concat environments.map { |e| e.to_s }
+    old = @environments
+    @environments = @environments.dup.concat environments.map { |e| e.to_s }
 
-    begin
-      instance_eval(&block)
-    ensure
-      @environments = old
-    end
+    instance_eval(&block)
+  ensure
+    @environments = old
   end
 
   # Express a gem dependency. Works pretty much like RubyGems' +gem+
@@ -147,11 +145,13 @@ class Isolate
   def gem name, *requirements
     options = Hash === requirements.last ? requirements.pop : {}
 
-    requirement = requirements.empty? ?
-      Gem::Requirement.default :
-      Gem::Requirement.new(requirements)
+    requirement = if requirements.empty? then
+                    Gem::Requirement.default
+                  else
+                    Gem::Requirement.new(requirements)
+                  end
 
-    entry = Entry.new name, requirement, @environments.dup,  options
+    entry = Entry.new name, requirement, @environments,  options
 
     entries << entry
     entry
