@@ -1,4 +1,5 @@
 require "rubygems/dependency_installer"
+require "rubygems/uninstaller"
 require "rubygems/requirement"
 
 # Restricts +GEM_PATH+ and +GEM_HOME+ and provides a DSL for
@@ -14,6 +15,10 @@ class Isolate
     def matches? environment # :nodoc:
       environments.empty? || environments.include?(environment)
     end
+
+    def matches_spec? spec
+      self.name == spec.name and self.requirement.satisfied_by? spec.version
+    end
   end
 
   VERSION = "1.3.0" # :nodoc:
@@ -28,6 +33,7 @@ class Isolate
 
   def self.activate environment
     instance.activate environment
+    instance.cleanup
   end
 
   # Declare an isolated RubyGems environment, installed in +path+. The
@@ -83,6 +89,30 @@ class Isolate
     end
 
     self
+  end
+
+  def cleanup
+    activated = Gem.loaded_specs.values.map { |s| s.full_name }
+    extra     = Gem.source_index.gems.values.sort.reject { |spec|
+      activated.include? spec.full_name or
+        entries.any? { |e| e.matches_spec? spec }
+    }
+
+    log "Cleaning..." unless extra.empty?
+
+    padding = extra.size.to_s.size # omg... heaven forbid you use math
+    format  = "[%0#{padding}d/%s] Nuking %s."
+    extra.each_with_index do |e, i|
+      log format % [i + 1, extra.size, e.full_name]
+
+      Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
+        Gem::Uninstaller.new(e.name,
+                             :version     => e.version,
+                             :ignore      => true,
+                             :executables => true,
+                             :install_dir => self.path).uninstall
+      end
+    end
   end
 
   def disable # :nodoc:
@@ -157,6 +187,10 @@ class Isolate
     entry
   end
 
+  def log s
+    $stderr.puts s if verbose?
+  end
+
   def install environment = nil # :nodoc:
     env = environment.to_s if environment
 
@@ -164,15 +198,17 @@ class Isolate
       !Gem.available?(e.name, *e.requirement.as_list) && e.matches?(env)
     end
 
+    log "Isolating #{environment}..." unless installable.empty?
+
+    padding = installable.size.to_s.size # omg... heaven forbid you use math
+    format  = "[%0#{padding}d/%s] Isolating %s (%s)."
     installable.each_with_index do |e, i|
-      if verbose?
-        padding  = installable.size.to_s.size
-        progress = "[%0#{padding}d/%s]" % [i + 1, installable.size]
-        warn "#{progress} Isolating #{e.name} (#{e.requirement})."
-      end
+      log format % [i + 1, installable.size, e.name, e.requirement]
 
       old         = Gem.sources.dup
-      options     = e.options.merge :install_dir => path
+      options     = e.options.merge(:install_dir   => path,
+                                    :generate_rdoc => false,
+                                    :generate_ri   => false)
       source      = options.delete :source
       args        = options.delete :args
       Gem.sources = Array(source) if source

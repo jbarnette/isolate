@@ -4,6 +4,8 @@ require "rubygems/requirement"
 require "isolate"
 
 class TestIsolate < MiniTest::Unit::TestCase
+  WITH_HOE = "test/fixtures/with-hoe"
+
   def setup
     @isolate = Isolate.new "tmp/gems", :install => false, :verbose => false
   end
@@ -11,24 +13,25 @@ class TestIsolate < MiniTest::Unit::TestCase
   def teardown
     @isolate.disable
     Isolate.instance.disable if Isolate.instance
-    Gem::DependencyInstaller.reset_last_install
+    Gem::DependencyInstaller.reset_value
+    Gem::Uninstaller.reset_value
     FileUtils.rm_rf "tmp/gems"
   end
 
   def test_self_gems
     assert_nil Isolate.instance
 
-    Isolate.gems "test/fixtures/with-hoe" do
+    Isolate.gems WITH_HOE do
       gem "hoe"
     end
 
     refute_nil Isolate.instance
-    assert_equal "test/fixtures/with-hoe", Isolate.instance.path
+    assert_equal WITH_HOE, Isolate.instance.path
     assert_equal "hoe", Isolate.instance.entries.first.name
   end
 
   def test_activate
-    @isolate = Isolate.new "test/fixtures/with-hoe"
+    @isolate = Isolate.new WITH_HOE
 
     assert_nil Gem.loaded_specs["hoe"]
 
@@ -39,7 +42,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment
-    @isolate = Isolate.new "test/fixtures/with-hoe"
+    @isolate = Isolate.new WITH_HOE
     @isolate.gem "rubyforge"
 
     @isolate.environment "borg" do
@@ -52,7 +55,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment_explicit
-    @isolate = Isolate.new "test/fixtures/with-hoe"
+    @isolate = Isolate.new WITH_HOE
 
     @isolate.gem "rubyforge"
 
@@ -74,7 +77,7 @@ class TestIsolate < MiniTest::Unit::TestCase
     begin; @isolate.activate; rescue Gem::LoadError; end
 
     assert_equal ["foo", Gem::Requirement.default],
-      Gem::DependencyInstaller.last_install
+      Gem::DependencyInstaller.value.shift
   end
 
   def test_activate_install_environment
@@ -82,11 +85,27 @@ class TestIsolate < MiniTest::Unit::TestCase
     @isolate.environment(:nope) { gem "foo" }
 
     @isolate.activate
-    assert_nil Gem::DependencyInstaller.last_install
+    assert_empty Gem::DependencyInstaller.value
   end
 
   def test_activate_ret
     assert_equal @isolate, @isolate.activate
+  end
+
+  # TODO: cleanup with 2 versions of same gem, 1 activated
+  # TODO: install with 1 older version, 1 new gem to be installed
+
+  def test_cleanup
+    @isolate = Isolate.new WITH_HOE, :verbose => false
+    # no gems specified on purpose
+    @isolate.activate
+    @isolate.cleanup
+
+    expected = [["hoe",       "2.3.3", WITH_HOE],
+                ["rake",      "0.8.7", WITH_HOE],
+                ["rubyforge", "1.0.4", WITH_HOE]]
+
+    assert_equal expected, Gem::Uninstaller.value
   end
 
   def test_disable
@@ -111,7 +130,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_enable
-    assert !Gem.find_files("minitest/unit.rb").empty?,
+    refute_empty Gem.find_files("minitest/unit.rb"),
       "There's a minitest/unit in the current env, since we're running it."
 
     @isolate.enable
@@ -122,7 +141,7 @@ class TestIsolate < MiniTest::Unit::TestCase
     assert_equal [], Gem.find_files("minitest/unit.rb"),
       "Can't find minitest/unit now, 'cause we're activated!"
 
-    assert Gem.loaded_specs.empty?
+    assert_empty Gem.loaded_specs
     assert_equal [@isolate.path], Gem.path
   end
 
@@ -150,7 +169,7 @@ class TestIsolate < MiniTest::Unit::TestCase
 
   def test_gem
     g = @isolate.gem "foo"
-    assert @isolate.entries.include?(g)
+    assert_includes @isolate.entries, g
 
     assert_equal "foo", g.name
     assert_equal Gem::Requirement.create(">= 0"), g.requirement
@@ -182,16 +201,29 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 end
 
-# Gem::DependencyInstaller#install is brutally stubbed.
+module BrutalStub
+  @@value = []
+  def value; @@value end
+  def reset_value; value.clear end
+end
 
 class Gem::DependencyInstaller
-  @@last_install = nil
-  def self.last_install; @@last_install end
-  def self.reset_last_install; @@last_install = nil end
+  extend BrutalStub
 
   alias old_install install
-
   def install name, requirement
-    @@last_install = [name, requirement]
+    self.class.value << [name, requirement]
+  end
+end
+
+class Gem::Uninstaller
+  extend BrutalStub
+
+  attr_reader :gem, :version, :gem_home
+  alias old_uninstall uninstall
+  def uninstall
+    self.class.value << [self.gem,
+                         self.version.to_s,
+                         self.gem_home.sub(Dir.pwd + "/", '')]
   end
 end
