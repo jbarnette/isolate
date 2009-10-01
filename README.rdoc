@@ -78,11 +78,17 @@ exceptions, <tt>:source</tt> and <tt>:args</tt>.
 
 === Installing Isolated Gems
 
-By default, Isolate will install your gems automatically. You can pass
-<tt>:install</tt> and <tt>:verbose</tt> options to control things:
+By default, Isolate will install and clean up your gems
+automatically. You can pass the <tt>:cleanup</tt>, <tt>:install</tt>,
+and <tt>:verbose</tt> options to control things:
+
+    # don't remove unnecesary gems
+    Isolate.gems "vendor/isolated", :cleanup => false do
+      ...
+    end
 
     # install, but quietly
-    Isolate.gems "vendor/isolated" :verbose => false do
+    Isolate.gems "vendor/isolated", :verbose => false do
       ...
     end
 
@@ -129,15 +135,12 @@ the preinitializer:
       # Twitter authentication
       gem "oauth", "~> 0.3"
 
-      environment :development, :test do
-        gem "modelizer" # easy model factories
+      environment :cucumber, :development, :test do
+        gem "cucumber"     # stories!
+        gem "modelizer"    # easy model factories
         gem "sqlite3-ruby" # database support
         gem "vlad"         # deployment
         gem "webrat"       # integration tests
-      end
-
-      environment :cucumber do
-        gem "cucumber" # stories!
       end
     end
 

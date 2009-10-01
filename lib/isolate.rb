@@ -33,7 +33,7 @@ class Isolate
 
   def self.activate environment
     instance.activate environment
-    instance.cleanup
+    instance.cleanup if instance.cleanup?
   end
 
   # Declare an isolated RubyGems environment, installed in +path+. The
@@ -42,7 +42,7 @@ class Isolate
   #
   # Option defaults:
   #
-  #    { :install => true, :verbose => true }
+  #    { :cleanup => true, :install => true, :verbose => true }
 
   def self.gems path, options = {}, &block
     @@instance = new path, options, &block
@@ -71,9 +71,11 @@ class Isolate
     @enabled      = false
     @entries      = []
     @environments = []
-    @install      = options.key?(:install) ? options[:install] : true
     @path         = path
-    @verbose      = options.key?(:verbose) ? options[:verbose] : true
+
+    @install      = options.fetch :install, true
+    @verbose      = options.fetch :verbose, true
+    @cleanup      = @install && options.fetch(:cleanup, true)
 
     instance_eval(&block) if block_given?
   end
@@ -113,6 +115,10 @@ class Isolate
                              :install_dir => self.path).uninstall
       end
     end
+  end
+
+  def cleanup? # :nodoc:
+    @cleanup
   end
 
   def disable # :nodoc:

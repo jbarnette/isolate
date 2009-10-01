@@ -194,10 +194,17 @@ class TestIsolate < MiniTest::Unit::TestCase
     i = Isolate.new "foo/gems"
     assert i.install?
     assert i.verbose?
+    assert i.cleanup?
 
-    i = Isolate.new "foo/gems", :install => false, :verbose => false
+    i = Isolate.new "foo/gems",
+      :cleanup => false, :install => false, :verbose => false
+
+    refute i.cleanup?
     refute i.install?
     refute i.verbose?
+
+    i = Isolate.new "foo/gems", :install => false
+    refute i.cleanup?, "no install, no cleanup"
   end
 end
 
