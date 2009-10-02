@@ -216,6 +216,10 @@ class TestIsolate < MiniTest::Unit::TestCase
     idx = Gem.source_index.dup
     @isolate.activate
     assert_equal idx, Gem.source_index
+
+
+    @isolate.passthrough { false }
+    refute @isolate.passthrough?
   end
 end
 

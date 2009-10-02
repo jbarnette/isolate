@@ -71,6 +71,7 @@ class Isolate
     @enabled      = false
     @entries      = []
     @environments = []
+    @passthrough  = false
     @path         = path
 
     @install      = options.fetch :install, true
@@ -242,11 +243,11 @@ class Isolate
   end
 
   def passthrough &block # :nodoc:
-    @passthrough = block
+    @passthrough = yield
   end
 
   def passthrough? # :nodoc:
-    defined? @passthrough and @passthrough ||= @passthrough.call
+    @passthrough
   end
 
   def verbose? # :nodoc:
