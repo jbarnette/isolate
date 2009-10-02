@@ -81,6 +81,7 @@ class Isolate
   end
 
   def activate environment = nil # :nodoc:
+    return self if passthrough?
     enable unless enabled?
 
     env = environment.to_s if environment
@@ -94,6 +95,8 @@ class Isolate
   end
 
   def cleanup
+    return self if passthrough?
+
     activated = Gem.loaded_specs.values.map { |s| s.full_name }
     extra     = Gem.source_index.gems.values.sort.reject { |spec|
       activated.include? spec.full_name or
@@ -122,6 +125,7 @@ class Isolate
   end
 
   def disable # :nodoc:
+    return self if passthrough?
     return self unless enabled?
 
     ENV["GEM_PATH"] = @old_gem_path
@@ -137,7 +141,7 @@ class Isolate
   end
 
   def enable # :nodoc:
-    return self if enabled?
+    return self if passthrough? || enabled?
 
     @old_gem_path  = ENV["GEM_PATH"]
     @old_gem_home  = ENV["GEM_HOME"]
@@ -198,6 +202,8 @@ class Isolate
   end
 
   def install environment = nil # :nodoc:
+    return self if passthrough?
+
     env = environment.to_s if environment
 
     installable = entries.select do |e|
@@ -233,6 +239,14 @@ class Isolate
 
   def install? # :nodoc:
     @install
+  end
+
+  def passthrough &block # :nodoc:
+    @passthrough = block
+  end
+
+  def passthrough? # :nodoc:
+    defined? @passthrough and @passthrough ||= @passthrough.call
   end
 
   def verbose? # :nodoc:
