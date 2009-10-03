@@ -72,7 +72,7 @@ class Isolate
     @entries      = []
     @environments = []
     @passthrough  = false
-    @path         = path
+    @path         = File.expand_path path
 
     @install      = options.fetch :install, true
     @verbose      = options.fetch :verbose, true

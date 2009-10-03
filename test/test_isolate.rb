@@ -26,7 +26,7 @@ class TestIsolate < MiniTest::Unit::TestCase
     end
 
     refute_nil Isolate.instance
-    assert_equal WITH_HOE, Isolate.instance.path
+    assert_equal File.expand_path(WITH_HOE), Isolate.instance.path
     assert_equal "hoe", Isolate.instance.entries.first.name
   end
 
@@ -187,7 +187,7 @@ class TestIsolate < MiniTest::Unit::TestCase
 
   def test_initialize
     i = Isolate.new "foo/gems"
-    assert_equal "foo/gems", i.path
+    assert_equal File.expand_path("foo/gems"), i.path
   end
 
   def test_initialize_options
