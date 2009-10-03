@@ -1,3 +1,8 @@
+=== 1.6.0 / 2009-10-03
+
+* Add Rake helpers.
+* Expose the bin path to subshells.
+
 === 1.5.1 / 2009-10-02
 
 * Fix passthrough for explicitly false conditions.
