@@ -118,6 +118,33 @@ and <tt>:verbose</tt> options to control things:
       ...
     end
 
+=== Interaction and Rake
+
+You don't strictly need them, but Isolate provides a set of Rake tasks
+that make a few common thing easier. To use them, just drop a
+<tt>require</tt> in your <tt>Rakefile</tt>:
+
+    require "isolate/rake"
+
+==== Running Shell Commands
+
+When you're in an isolated subshell, the command-line tools provided
+by any of your gems are available on your PATH.
+
+    # run a single command in an isolated subshell
+    $ rake isolate:sh['gem list']
+
+    # run a new isolated subshell
+    $ rake isolate:sh
+
+==== Exporting
+
+Isolate can generate a <tt>.gems</tt> manifest file in the root
+directory of your project. <tt>.gems</tt> is used (among other things)
+to specify project dependencies on Heroku.
+
+    $ rake isolate:dotgems
+
 === A Rails Example
 
 Here's a quick example (extracted from a real project) of how to use
