@@ -9,7 +9,7 @@ namespace :isolate do
         gems << "--version '#{entry.requirement}'"
         gems << "--source #{entry.options[:source]}" if entry.options[:source]
 
-        f.puts gems.join " "
+        f.puts gems.join(" ")
       end
 
       # this above all: to thine own self be true
