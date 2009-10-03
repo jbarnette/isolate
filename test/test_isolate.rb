@@ -109,19 +109,22 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_disable
-    home, path = ENV.values_at "GEM_HOME", "GEM_PATH"
+    home, path, bin = ENV.values_at "GEM_HOME", "GEM_PATH", "PATH"
     load_path  = $LOAD_PATH.dup
 
     @isolate.enable
 
     refute_equal home, ENV["GEM_HOME"]
     refute_equal path, ENV["GEM_PATH"]
+    refute_equal bin,  ENV["PATH"]
+
     refute_equal load_path, $LOAD_PATH
 
     @isolate.disable
 
     assert_equal home, ENV["GEM_HOME"]
     assert_equal path, ENV["GEM_PATH"]
+    assert_equal bin,  ENV["PATH"]
     assert_equal load_path, $LOAD_PATH
   end
 
@@ -137,6 +140,7 @@ class TestIsolate < MiniTest::Unit::TestCase
 
     assert_equal @isolate.path, ENV["GEM_PATH"]
     assert_equal @isolate.path, ENV["GEM_HOME"]
+    assert ENV["PATH"].include?(File.join(@isolate.path, "bin")), "in path"
 
     assert_equal [], Gem.find_files("minitest/unit.rb"),
       "Can't find minitest/unit now, 'cause we're activated!"

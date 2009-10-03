@@ -131,6 +131,7 @@ class Isolate
 
     ENV["GEM_PATH"] = @old_gem_path
     ENV["GEM_HOME"] = @old_gem_home
+    ENV["PATH"]     = @old_path
     ENV["RUBYOPT"]  = @old_ruby_opt
 
     $LOAD_PATH.replace @old_load_path
@@ -146,6 +147,7 @@ class Isolate
 
     @old_gem_path  = ENV["GEM_PATH"]
     @old_gem_home  = ENV["GEM_HOME"]
+    @old_path      = ENV["PATH"]
     @old_ruby_opt  = ENV["RUBYOPT"]
     @old_load_path = $LOAD_PATH.dup
 
@@ -157,6 +159,9 @@ class Isolate
 
     ENV["RUBYOPT"]  = "#{ENV['RUBYOPT']} -I#{File.dirname(__FILE__)}"
     ENV["GEM_PATH"] = ENV["GEM_HOME"] = path
+
+    bin = File.join path, "bin"
+    ENV["PATH"]= [bin, ENV["PATH"]].join File::PATH_SEPARATOR
 
     self.class.refresh
 
