@@ -151,7 +151,10 @@ class Isolate
     @old_ruby_opt  = ENV["RUBYOPT"]
     @old_load_path = $LOAD_PATH.dup
 
-    $LOAD_PATH.reject! { |p| Gem.path.any? { |gp| p.include?(gp) } }
+    $LOAD_PATH.reject! do |p|
+      p != File.dirname(__FILE__) &&
+        Gem.path.any? { |gp| p.include?(gp) }
+    end
 
     # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
     # subshells, and the only way I can think of to do that is by
@@ -161,7 +164,7 @@ class Isolate
     ENV["GEM_PATH"] = ENV["GEM_HOME"] = path
 
     bin = File.join path, "bin"
-    ENV["PATH"]= [bin, ENV["PATH"]].join File::PATH_SEPARATOR
+    ENV["PATH"] = [bin, ENV["PATH"]].join File::PATH_SEPARATOR
 
     self.class.refresh
 

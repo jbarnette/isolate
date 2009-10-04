@@ -17,9 +17,8 @@ namespace :isolate do
     end
   end
 
-  desc "Start an isolated subshell. Run 'command' and exit if specified."
+  desc "Run an isolated command or subshell."
   task :sh, [:command] do |t, args|
-    exec ENV["SHELL"] unless args.command
-    sh args.command
+    exec args.command || ENV["SHELL"]
   end
 end
