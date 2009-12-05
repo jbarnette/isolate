@@ -42,7 +42,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment
-    @isolate = Isolate.new WITH_HOE
+    @isolate = Isolate.new WITH_HOE, :verbose => false
     @isolate.gem "rubyforge"
 
     @isolate.environment "borg" do
@@ -99,7 +99,6 @@ class TestIsolate < MiniTest::Unit::TestCase
     @isolate = Isolate.new WITH_HOE, :verbose => false
     # no gems specified on purpose
     @isolate.activate
-    @isolate.cleanup
 
     expected = [["hoe",       "2.3.3", WITH_HOE],
                 ["rake",      "0.8.7", WITH_HOE],
