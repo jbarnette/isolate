@@ -28,10 +28,9 @@ class Hoe # :nodoc:
       self.isolate_dir ||= "tmp/gems"
     end
 
-    def define_isolate_tasks # :nodoc:
-      i = ::Isolate.new self.isolate_dir
+    def define_isolate_tasks # HACK
+      i = ::Isolate.new self.isolate_dir, :cleanup => true
 
-      # TODO: consider sneakily adding test lib deps if they don't exist
       (self.extra_deps + self.extra_dev_deps).each do |name, version|
         i.gem name, *Array(version)
       end
