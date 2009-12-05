@@ -33,7 +33,6 @@ class Isolate
 
   def self.activate environment
     instance.activate environment
-    instance.cleanup if instance.cleanup?
   end
 
   # Declare an isolated RubyGems environment, installed in +path+. The
@@ -91,6 +90,8 @@ class Isolate
     entries.each do |e|
       Gem.activate e.name, *e.requirement.as_list if e.matches? env
     end
+
+    self.cleanup if self.cleanup?
 
     self
   end
