@@ -137,6 +137,7 @@ class Isolate
     @enabled = false
 
     self.class.refresh
+
     self
   end
 
@@ -167,6 +168,7 @@ class Isolate
     self.class.refresh
 
     @enabled = true
+
     self
   end
 
@@ -201,11 +203,8 @@ class Isolate
     entry = Entry.new name, requirement, @environments,  options
 
     entries << entry
-    entry
-  end
 
-  def log s
-    $stderr.puts s if verbose?
+    entry
   end
 
   def install environment = nil # :nodoc:
@@ -241,11 +240,16 @@ class Isolate
     end
 
     Gem.source_index.refresh!
+
     self
   end
 
   def install? # :nodoc:
     @install
+  end
+
+  def log s # :nodoc:
+    $stderr.puts s if verbose?
   end
 
   def passthrough &block # :nodoc:
