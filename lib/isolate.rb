@@ -24,7 +24,6 @@ class Isolate
   VERSION = "1.6.1" # :nodoc:
 
   attr_reader :entries # :nodoc:
-
   attr_reader :path # :nodoc:
 
   # Activate (and possibly install) gems for a specific
@@ -91,7 +90,7 @@ class Isolate
       Gem.activate e.name, *e.requirement.as_list if e.matches? env
     end
 
-    self.cleanup if self.cleanup?
+    cleanup if cleanup?
 
     self
   end
@@ -198,7 +197,7 @@ class Isolate
     requirement = if requirements.empty? then
                     Gem::Requirement.default
                   else
-                    Gem::Requirement.new(requirements)
+                    Gem::Requirement.new requirements
                   end
 
     entry = Entry.new name, requirement, @environments,  options
