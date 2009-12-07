@@ -1,3 +1,9 @@
+=== 1.7.0 / 2009-12-07
+
+* Activate gems even in passthrough mode.
+* hoe/isolate cleans up by default.
+* Isolate#activate cleans up. Isolate.activate is a simple front-end.
+
 === 1.6.1 / 2009-10-04
 
 * Simplify subshells.
