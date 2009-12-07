@@ -80,7 +80,6 @@ class Isolate
   end
 
   def activate environment = nil # :nodoc:
-    return self if passthrough?
     enable unless enabled?
 
     env = environment.to_s if environment
@@ -126,8 +125,7 @@ class Isolate
   end
 
   def disable # :nodoc:
-    return self if passthrough?
-    return self unless enabled?
+    return self if passthrough? or not enabled?
 
     ENV["GEM_PATH"] = @old_gem_path
     ENV["GEM_HOME"] = @old_gem_home
@@ -143,7 +141,7 @@ class Isolate
   end
 
   def enable # :nodoc:
-    return self if passthrough? || enabled?
+    return self if passthrough? or enabled?
 
     @old_gem_path  = ENV["GEM_PATH"]
     @old_gem_home  = ENV["GEM_HOME"]
