@@ -1,3 +1,7 @@
+=== 1.7.1 / 2009-12-08
+
+* Move to 1-phase activation. Deprecate Isolate.activate.
+
 === 1.7.0 / 2009-12-07
 
 * Activate gems even in passthrough mode.

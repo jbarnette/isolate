@@ -21,7 +21,7 @@ class Isolate
     end
   end
 
-  VERSION = "1.7.0" # :nodoc:
+  VERSION = "1.7.1" # :nodoc:
 
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
