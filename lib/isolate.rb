@@ -17,7 +17,7 @@ class Isolate
     end
 
     def matches_spec? spec
-      self.name == spec.name and self.requirement.satisfied_by? spec.version
+      name == spec.name and requirement.satisfied_by? spec.version
     end
   end
 
@@ -26,12 +26,11 @@ class Isolate
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
 
-  # Activate (and possibly install) gems for a specific
-  # +environment+. This allows two-stage isolation, which is necessary
-  # for stuff like Rails. See README.rdoc for a detailed example.
+  # Deprecated. This is no a no-op, and will be removed shortly.
 
   def self.activate environment
-    instance.activate environment
+    puts "DEPRECATED: Isolate.activate is a no-op now. " +
+      "It'll be removed in v1.8. See the README for details."
   end
 
   # Declare an isolated RubyGems environment, installed in +path+. The
@@ -63,7 +62,7 @@ class Isolate
   end
 
   # Create a new Isolate instance. See Isolate.gems for the public
-  # API. Don't use this constructor directly.
+  # API. You probably don't want to use this constructor directly.
 
   def initialize path, options = {}, &block
     @enabled      = false
@@ -79,11 +78,24 @@ class Isolate
     instance_eval(&block) if block_given?
   end
 
-  def activate environment = nil # :nodoc:
+  # Activate this set of isolated entries, respecting an optional
+  # +environment+. Points RubyGems to a separate repository, messes
+  # with paths, auto-installs gems (if necessary), activates
+  # everything, and removes any superfluous gem (again, if
+  # necessary). If +environment+ isn't specified, +ISOLATE_ENV+,
+  # +RAILS_ENV+, and +RACK_ENV+ are checked before falling back to
+  # <tt>"development"</tt>.
+
+  def activate environment = nil
     enable unless enabled?
 
-    env = environment.to_s if environment
-    install environment if install?
+    env = (environment        ||
+           ENV["ISOLATE_ENV"] ||
+           ENV["RAILS_ENV"]   ||
+           ENV["RACK_ENV"]    ||
+           "development").to_s
+
+    install env if install?
 
     entries.each do |e|
       Gem.activate e.name, *e.requirement.as_list if e.matches? env
@@ -94,7 +106,7 @@ class Isolate
     self
   end
 
-  def cleanup
+  def cleanup # :nodoc:
     return self if passthrough?
 
     activated = Gem.loaded_specs.values.map { |s| s.full_name }
@@ -115,7 +127,7 @@ class Isolate
                              :version     => e.version,
                              :ignore      => true,
                              :executables => true,
-                             :install_dir => self.path).uninstall
+                             :install_dir => path).uninstall
       end
     end
   end
@@ -207,13 +219,11 @@ class Isolate
     entry
   end
 
-  def install environment = nil # :nodoc:
+  def install environment # :nodoc:
     return self if passthrough?
 
-    env = environment.to_s if environment
-
     installable = entries.select do |e|
-      !Gem.available?(e.name, *e.requirement.as_list) && e.matches?(env)
+      !Gem.available?(e.name, *e.requirement.as_list) && e.matches?(environment)
     end
 
     log "Isolating #{environment}..." unless installable.empty?

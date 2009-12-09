@@ -193,15 +193,10 @@ the preinitializer:
     end
 
 Since this is in the preinitializer, Isolate will install and activate
-the fundamental gems before Rails loads.
-
-This is early enough in Rails' lifecycle that <tt>RAILS_ENV</tt> isn't
-set, so we need a way to activate gems for the current
-environment. Let's add one line to <tt>config/environment.rb</tt>,
-right below where <tt>boot.rb</tt> is required:
-
-    require File.join(File.dirname(__FILE__), 'boot')
-    Isolate.activate RAILS_ENV
+the all gems before Rails loads. The current environment is determined
+by looking at the <tt>ISOLATE_ENV</tt>, <tt>RAILS_ENV</tt>, or
+<tt>RACK_ENV</tt> environment variable. If none are set,
+<tt>"development"</tt> is the default.
 
 Pow. Isolated!
 
