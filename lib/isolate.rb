@@ -21,7 +21,7 @@ class Isolate
     end
   end
 
-  VERSION = "1.7.1" # :nodoc:
+  VERSION = "1.8.0" # :nodoc:
 
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
@@ -232,7 +232,7 @@ class Isolate
       Gem.sources = Array(source) if source
       installer   = Gem::DependencyInstaller.new options
 
-      Gem::Command.build_args = args if args
+      Gem::Command.build_args = Array(args) if args
       installer.install e.name, e.requirement
 
       Gem.sources = old
