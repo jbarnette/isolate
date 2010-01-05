@@ -26,13 +26,6 @@ class Isolate
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
 
-  # Deprecated. This is no a no-op, and will be removed shortly.
-
-  def self.activate environment
-    puts "DEPRECATED: Isolate.activate is a no-op now. " +
-      "It'll be removed in v1.8. See the README for details."
-  end
-
   # Declare an isolated RubyGems environment, installed in +path+. The
   # block given will be <tt>instance_eval</tt>ed, see Isolate#gem and
   # Isolate#environment for the sort of stuff you can do.
