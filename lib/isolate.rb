@@ -68,7 +68,6 @@ class Isolate
     @enabled      = false
     @entries      = []
     @environments = []
-    @passthrough  = false
     @path         = File.expand_path path
 
     @install      = options.fetch :install, true
@@ -107,8 +106,6 @@ class Isolate
   end
 
   def cleanup # :nodoc:
-    return self if passthrough?
-
     activated = Gem.loaded_specs.values.map { |s| s.full_name }
     extra     = Gem.source_index.gems.values.sort.reject { |spec|
       activated.include? spec.full_name or
@@ -137,7 +134,7 @@ class Isolate
   end
 
   def disable # :nodoc:
-    return self if passthrough? or not enabled?
+    return self if not enabled?
 
     ENV["GEM_PATH"] = @old_gem_path
     ENV["GEM_HOME"] = @old_gem_home
@@ -154,7 +151,7 @@ class Isolate
   end
 
   def enable # :nodoc:
-    return self if passthrough? or enabled?
+    return self if  enabled?
 
     @old_gem_path  = ENV["GEM_PATH"]
     @old_gem_home  = ENV["GEM_HOME"]
@@ -220,16 +217,15 @@ class Isolate
   end
 
   def install environment # :nodoc:
-    return self if passthrough?
-
     installable = entries.select do |e|
       !Gem.available?(e.name, *e.requirement.as_list) && e.matches?(environment)
     end
 
-    log "Isolating #{environment}..." unless installable.empty?
+    return self if installable.empty?
 
     padding = installable.size.to_s.size # omg... heaven forbid you use math
     format  = "[%0#{padding}d/%s] Isolating %s (%s)."
+
     installable.each_with_index do |e, i|
       log format % [i + 1, installable.size, e.name, e.requirement]
 
@@ -260,14 +256,6 @@ class Isolate
 
   def log s # :nodoc:
     $stderr.puts s if verbose?
-  end
-
-  def passthrough &block # :nodoc:
-    @passthrough = yield
-  end
-
-  def passthrough? # :nodoc:
-    @passthrough
   end
 
   def verbose? # :nodoc:

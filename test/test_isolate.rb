@@ -209,21 +209,6 @@ class TestIsolate < MiniTest::Unit::TestCase
     i = Isolate.new "foo/gems", :install => false
     refute i.cleanup?, "no install, no cleanup"
   end
-
-  def test_passthrough
-    refute @isolate.passthrough?
-
-    @isolate.passthrough { true }
-    assert @isolate.passthrough?
-
-    idx = Gem.source_index.dup
-    @isolate.activate
-    assert_equal idx, Gem.source_index
-
-
-    @isolate.passthrough { false }
-    refute @isolate.passthrough?
-  end
 end
 
 module BrutalStub

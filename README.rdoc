@@ -64,27 +64,6 @@ Unsurprisingly, the <tt>mocha</tt> gem will only be activated in the
 example below for an example of how to use <tt>RAILS_ENV</tt> to set
 your environment.
 
-=== Passthrough
-
-Sometimes (especially on systems with alternative Gem management like
-Heroku) you want Isolate to sit in a corner, be very, very quiet, and
-let all calls pass right through.
-
-If you want to make Isolate a complete no-op in production, and your
-environment sets <tt>RACK_ENV</tt>, you could do something like this:
-
-    Isolate.gems "vendor/isolated" do
-      passthrough { %w(beta production).include? ENV["RACK_ENV"] }
-
-      # the rest of your gems...
-    end
-
-...and nothing will get isolated. The block should evaluate to
-<tt>true</tt> if that's what you want, and it's only evaluated
-once. This is run really early, so don't blindly assume things like
-the <tt>RAILS_ENV</tt> constant are set. Check your environment for
-details.
-
 === Options
 
 Any trailing hash args to <tt>gem</tt> are passed to
@@ -95,7 +74,7 @@ exceptions, <tt>:source</tt> and <tt>:args</tt>.
     gem "jbarnette-johnson", :source => "http://gems.github.com"
 
     # pass gem install args (the part after the '--')
-    gem "pg", :args => "ARCHFLAGS='-arch x86_64'"
+    gem "agem", :args => "--no-blah"
 
 === Installing Isolated Gems
 
