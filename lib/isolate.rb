@@ -105,10 +105,11 @@ class Isolate
         entries.any? { |e| e.matches_spec? spec }
     }
 
-    log "Cleaning..." unless extra.empty?
+    return if extra.empty?
 
-    padding = extra.size.to_s.size # omg... heaven forbid you use math
+    padding = Math.log10(extra.size).to_i + 1
     format  = "[%0#{padding}d/%s] Nuking %s."
+
     extra.each_with_index do |e, i|
       log format % [i + 1, extra.size, e.full_name]
 
@@ -144,7 +145,7 @@ class Isolate
   end
 
   def enable # :nodoc:
-    return self if  enabled?
+    return self if enabled?
 
     @old_gem_path  = ENV["GEM_PATH"]
     @old_gem_home  = ENV["GEM_HOME"]
@@ -216,7 +217,7 @@ class Isolate
 
     return self if installable.empty?
 
-    padding = installable.size.to_s.size # omg... heaven forbid you use math
+    padding = Math.log10(installable.size).to_i + 1
     format  = "[%0#{padding}d/%s] Isolating %s (%s)."
 
     installable.each_with_index do |e, i|
