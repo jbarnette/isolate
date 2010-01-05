@@ -1,3 +1,10 @@
+=== 1.8.0 / 2010-01-05
+
+* Make build args forgive non-Array input.
+* OMG, heaven forbid I use math.
+* Remove deprecated Isolate.activate method.
+* Remove passthrough, that's what conditionals are for.
+
 === 1.7.1 / 2009-12-08
 
 * Move to 1-phase activation. Deprecate Isolate.activate.
