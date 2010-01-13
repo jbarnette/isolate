@@ -1,3 +1,8 @@
+=== 1.8.2 / 2010-01-13
+
+* Don't include Isolate as a dependency in .gems.
+* Tweak the README structure for clarity.
+
 === 1.8.1 / 2010-01-13
 
 * Allow isolate:dotgems to take an env.
