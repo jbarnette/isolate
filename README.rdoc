@@ -7,6 +7,8 @@
 Isolate is a very simple RubyGems sandbox. It provides a way to
 express and install your code's Gem dependencies.
 
+== How?
+
 When Isolate runs, it uses GEM_HOME, GEM_PATH, and a few other tricks
 to completely separate your code from the system's RubyGems
 configuration, leaving it free to run in blissful solitude.
