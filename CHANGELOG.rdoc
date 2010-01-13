@@ -1,3 +1,7 @@
+=== 1.8.1 / 2010-01-13
+
+* Allow isolate:dotgems to take an env.
+
 === 1.8.0 / 2010-01-05
 
 * Make build args forgive non-Array input.
