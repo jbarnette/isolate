@@ -13,9 +13,6 @@ namespace :isolate do
 
         f.puts gems.join(" ")
       end
-
-      # this above all: to thine own self be true
-      f.puts "isolate --version '#{Isolate::VERSION}'"
     end
   end
 
