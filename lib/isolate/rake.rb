@@ -1,9 +1,11 @@
 namespace :isolate do
   desc "Generate a .gems manifest for your isolated gems."
-  task :dotgems do
+  task :dotgems, [:env] do |_, args|
+    env = args.env || Isolate.env
+
     File.open ".gems", "wb" do |f|
       Isolate.instance.entries.each do |entry|
-        next unless entry.environments.empty?
+        next unless entry.matches? env
 
         gems  = [entry.name]
         gems << "--version '#{entry.requirement}'"

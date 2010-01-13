@@ -8,6 +8,7 @@ class TestIsolate < MiniTest::Unit::TestCase
 
   def setup
     @isolate = Isolate.new "tmp/gems", :install => false, :verbose => false
+    @env     = ENV.to_hash
   end
 
   def teardown
@@ -16,6 +17,25 @@ class TestIsolate < MiniTest::Unit::TestCase
     Gem::DependencyInstaller.reset_value
     Gem::Uninstaller.reset_value
     FileUtils.rm_rf "tmp/gems"
+    ENV.replace @env
+  end
+
+  def test_self_env
+    assert_equal "development", Isolate.env
+
+    ENV["RAILS_ENV"] = "foo"
+
+    assert_equal "foo", Isolate.env
+
+    ENV["RAILS_ENV"] = nil
+    ENV["RACK_ENV"]  = "bar"
+
+    assert_equal "bar", Isolate.env
+
+    ENV["RACK_ENV"]    = nil
+    ENV["ISOLATE_ENV"] = "baz"
+
+    assert_equal "baz", Isolate.env
   end
 
   def test_self_gems

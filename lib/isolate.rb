@@ -21,10 +21,14 @@ class Isolate
     end
   end
 
-  VERSION = "1.8.0" # :nodoc:
+  VERSION = "1.8.1" # :nodoc:
 
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
+
+  def self.env # :nodoc:
+    ENV["ISOLATE_ENV"] || ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+  end
 
   # Declare an isolated RubyGems environment, installed in +path+. The
   # block given will be <tt>instance_eval</tt>ed, see Isolate#gem and
@@ -81,11 +85,7 @@ class Isolate
   def activate environment = nil
     enable unless enabled?
 
-    env = (environment        ||
-           ENV["ISOLATE_ENV"] ||
-           ENV["RAILS_ENV"]   ||
-           ENV["RACK_ENV"]    ||
-           "development").to_s
+    env = (environment || self.class.env).to_s
 
     install env if install?
 
