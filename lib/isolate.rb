@@ -8,7 +8,7 @@ require "rubygems/requirement"
 
 class Isolate
 
-  VERSION = "1.8.2" # :nodoc:
+  VERSION = "1.9.0" # :nodoc:
 
   # An isolated Gem, with requirement, environment restrictions, and
   # installation options. Internal use only.
