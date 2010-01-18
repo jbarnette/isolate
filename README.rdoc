@@ -47,6 +47,14 @@ At the end of the <tt>Isolate.gems</tt> block, you're completely
 isolated. <tt>GEM_PATH</tt> and <tt>GEM_HOME</tt> are set, and all
 your specified gems have been activated.
 
+If you need access to the original un-isolated environment for any
+reason, you can temporarily disable Isolate:
+
+    Isolate.disable { `heroku config` }
+
+I occasionally use this to call out to gems or tools that don't belong
+in my project.
+
 === Conditionals
 
 Sometimes different sets of gems are appropriate at different

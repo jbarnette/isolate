@@ -8,6 +8,8 @@ require "rubygems/requirement"
 
 class Isolate
 
+  VERSION = "1.8.2" # :nodoc:
+
   # An isolated Gem, with requirement, environment restrictions, and
   # installation options. Internal use only.
 
@@ -21,10 +23,15 @@ class Isolate
     end
   end
 
-  VERSION = "1.8.2" # :nodoc:
-
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
+
+  # Disable Isolate. If a block is provided, isolation will be
+  # disabled for the scope of the block.
+
+  def self.disable &block
+    instance.disable &block
+  end
 
   def self.env # :nodoc:
     ENV["ISOLATE_ENV"] || ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
@@ -127,7 +134,7 @@ class Isolate
     @cleanup
   end
 
-  def disable # :nodoc:
+  def disable &block # :nodoc:
     return self if not enabled?
 
     ENV["GEM_PATH"] = @old_gem_path
@@ -140,6 +147,7 @@ class Isolate
     @enabled = false
 
     self.class.refresh
+    begin; return yield ensure enable end if block_given?
 
     self
   end
@@ -224,9 +232,10 @@ class Isolate
       log format % [i + 1, installable.size, e.name, e.requirement]
 
       old         = Gem.sources.dup
-      options     = e.options.merge(:install_dir   => path,
+      options     = e.options.merge(:development   => false,
                                     :generate_rdoc => false,
-                                    :generate_ri   => false)
+                                    :generate_ri   => false,
+                                    :install_dir   => path)
       source      = options.delete :source
       args        = options.delete :args
       Gem.sources = Array(source) if source
