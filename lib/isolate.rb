@@ -238,7 +238,7 @@ class Isolate
                                     :install_dir   => path)
       source      = options.delete :source
       args        = options.delete :args
-      Gem.sources = Array(source) if source
+      Gem.sources += Array(source) if source
       installer   = Gem::DependencyInstaller.new options
 
       Gem::Command.build_args = Array(args) if args
