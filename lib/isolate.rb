@@ -8,7 +8,7 @@ require "rubygems/requirement"
 
 class Isolate
 
-  VERSION = "1.9.0" # :nodoc:
+  VERSION = "1.9.1" # :nodoc:
 
   # An isolated Gem, with requirement, environment restrictions, and
   # installation options. Internal use only.
@@ -30,7 +30,7 @@ class Isolate
   # disabled for the scope of the block.
 
   def self.disable &block
-    instance.disable &block
+    instance.disable(&block)
   end
 
   def self.env # :nodoc:

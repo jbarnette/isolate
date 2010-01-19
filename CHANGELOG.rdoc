@@ -1,3 +1,7 @@
+=== 1.9.1 / 2010-01-18
+
+* Append to sources on install, don't just replace 'em.
+
 === 1.9.0 / 2010-01-18
 
 * Allow isolation to be disabled.
