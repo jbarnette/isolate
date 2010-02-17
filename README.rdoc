@@ -89,7 +89,7 @@ exceptions, <tt>:source</tt> and <tt>:args</tt>.
 === An External File
 
 If you'd like to have a separate file that *just* has your +gem+ and
-+environment+ calls in it, You can pass an optional <tt>:file</tt>
++environment+ calls in it, you can pass an optional <tt>:file</tt>
 option instead of (or in addition to) providing a block.
 
     # keepin' things clean
