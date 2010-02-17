@@ -9,6 +9,8 @@ class TestIsolate < MiniTest::Unit::TestCase
   def setup
     @isolate = Isolate.new "tmp/gems", :install => false, :verbose => false
     @env     = ENV.to_hash
+
+    Gem.loaded_specs.clear
   end
 
   def teardown
@@ -213,6 +215,14 @@ class TestIsolate < MiniTest::Unit::TestCase
     assert_equal File.expand_path("foo/gems"), i.path
   end
 
+  def test_initialize_block
+    i = Isolate.new "foo/gems" do
+      gem "hoe"
+    end
+
+    assert_equal "hoe", i.entries.first.name
+  end
+
   def test_initialize_options
     i = Isolate.new "foo/gems"
     assert i.install?
@@ -228,6 +238,9 @@ class TestIsolate < MiniTest::Unit::TestCase
 
     i = Isolate.new "foo/gems", :install => false
     refute i.cleanup?, "no install, no cleanup"
+
+    i = Isolate.new "foo/gems", :file => "test/fixtures/isolate.rb"
+    assert_equal "hoe", i.entries.first.name
   end
 end
 

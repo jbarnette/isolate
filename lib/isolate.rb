@@ -78,6 +78,7 @@ class Isolate
     @verbose      = options.fetch :verbose, true
     @cleanup      = @install && options.fetch(:cleanup, true)
 
+    instance_eval IO.read(options[:file]) if options[:file]
     instance_eval(&block) if block_given?
   end
 
