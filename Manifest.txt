@@ -6,6 +6,7 @@ Rakefile
 lib/hoe/isolate.rb
 lib/isolate.rb
 lib/isolate/rake.rb
+test/fixtures/isolate.rb
 test/fixtures/with-hoe/specifications/hoe-2.3.3.gemspec
 test/fixtures/with-hoe/specifications/rake-0.8.7.gemspec
 test/fixtures/with-hoe/specifications/rubyforge-1.0.4.gemspec

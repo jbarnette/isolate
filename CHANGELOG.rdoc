@@ -1,3 +1,7 @@
+=== 1.9.2 / 2010-02-17
+
+* Make it easier to break out the manifest to a separate file.
+
 === 1.9.1 / 2010-01-18
 
 * Append to sources on install, don't just replace 'em.

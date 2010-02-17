@@ -8,7 +8,7 @@ require "rubygems/requirement"
 
 class Isolate
 
-  VERSION = "1.9.1" # :nodoc:
+  VERSION = "1.9.2" # :nodoc:
 
   # An isolated Gem, with requirement, environment restrictions, and
   # installation options. Internal use only.
@@ -37,9 +37,12 @@ class Isolate
     ENV["ISOLATE_ENV"] || ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
   end
 
-  # Declare an isolated RubyGems environment, installed in +path+. The
+  # Declare an isolated RubyGems environment, installed in +path+. Any
   # block given will be <tt>instance_eval</tt>ed, see Isolate#gem and
   # Isolate#environment for the sort of stuff you can do.
+  #
+  # If you'd like to specify gems and environments in a separate file,
+  # you can pass an optional <tt>:file</tt> option.
   #
   # Option defaults:
   #
