@@ -95,6 +95,10 @@ option instead of (or in addition to) providing a block.
     # keepin' things clean
     Isolate.gems "tmp/gems", :file => "config/isolate.rb"
 
+If you pass <tt>:file => true</tt> instead, Isolate will try to load
+from <tt>./Isolate</tt> and <tt>./config/isolate.rb</tt>, in that
+order.
+
 === Installing Isolated Gems
 
 By default, Isolate will install and clean up your gems
