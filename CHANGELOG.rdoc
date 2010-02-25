@@ -1,3 +1,8 @@
+=== 1.9.3 / 2010-02-24
+
+* Passing <tt>:file => true</tt> to Isolate.gems will try +Isolate+
+  and <tt>config/isolate.rb</tt>.
+
 === 1.9.2 / 2010-02-17
 
 * Make it easier to break out the manifest to a separate file.
