@@ -1,3 +1,7 @@
+=== 1.10.0 / 2010-03-15
+
+* Speculative now! shortcut.
+
 === 1.9.3 / 2010-02-24
 
 * Passing <tt>:file => true</tt> to Isolate.gems will try +Isolate+
