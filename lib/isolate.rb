@@ -46,7 +46,12 @@ class Isolate
   #
   # Option defaults:
   #
-  #    { :cleanup => true, :install => true, :verbose => true }
+  #    {
+  #      :cleanup => true,
+  #      :install => true,
+  #      :system  => false,
+  #      :verbose => true
+  #    }
 
   def self.gems path, options = {}, &block
     @@instance = new path, options, &block
@@ -57,6 +62,10 @@ class Isolate
 
   def self.instance # :nodoc:
     @@instance
+  end
+
+  def self.now! #:nodoc:
+    gems "tmp/gems", :file => true, :system => true
   end
 
   # Poke RubyGems, we've probably monkeyed with a bunch of paths and
@@ -78,6 +87,7 @@ class Isolate
     @path         = File.expand_path path
 
     @install      = options.fetch :install, true
+    @system       = options.fetch :system,  false
     @verbose      = options.fetch :verbose, true
     @cleanup      = @install && options.fetch(:cleanup, true)
 
@@ -114,9 +124,11 @@ class Isolate
 
   def cleanup # :nodoc:
     activated = Gem.loaded_specs.values.map { |s| s.full_name }
-    extra     = Gem.source_index.gems.values.sort.reject { |spec|
-      activated.include? spec.full_name or
-        entries.any? { |e| e.matches_spec? spec }
+
+    extra = Gem.source_index.gems.values.sort.reject { |spec|
+      !spec.loaded_from.include?(path) or
+        activated.include? spec.full_name or
+          entries.any? { |e| e.matches? spec }
     }
 
     return if extra.empty?
@@ -168,22 +180,27 @@ class Isolate
     @old_ruby_opt  = ENV["RUBYOPT"]
     @old_load_path = $LOAD_PATH.dup
 
-    $LOAD_PATH.reject! do |p|
-      p != File.dirname(__FILE__) &&
-        Gem.path.any? { |gp| p.include?(gp) }
+    ENV["GEM_HOME"] = path
+
+    unless system?
+      $LOAD_PATH.reject! do |p|
+        p != File.dirname(__FILE__) &&
+          Gem.path.any? { |gp| p.include?(gp) }
+      end
+
+      # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
+      # subshells, and the only way I can think of to do that is by
+      # abusing RUBYOPT.
+
+      ENV["RUBYOPT"]  = "#{ENV['RUBYOPT']} -I#{File.dirname(__FILE__)}"
+      ENV["GEM_PATH"] = path
     end
-
-    # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
-    # subshells, and the only way I can think of to do that is by
-    # abusing RUBYOPT.
-
-    ENV["RUBYOPT"]  = "#{ENV['RUBYOPT']} -I#{File.dirname(__FILE__)}"
-    ENV["GEM_PATH"] = ENV["GEM_HOME"] = path
 
     bin = File.join path, "bin"
     ENV["PATH"] = [bin, ENV["PATH"]].join File::PATH_SEPARATOR
 
     self.class.refresh
+    Gem.path.unshift path if system?
 
     @enabled = true
 
@@ -266,6 +283,10 @@ class Isolate
 
   def log s # :nodoc:
     $stderr.puts s if verbose?
+  end
+
+  def system? # :nodoc:
+    @system
   end
 
   def verbose? # :nodoc:
