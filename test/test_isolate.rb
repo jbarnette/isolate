@@ -1,6 +1,9 @@
 require "minitest/autorun"
 require "rubygems/dependency_installer"
 require "rubygems/requirement"
+
+$TESTING = true
+
 require "isolate"
 
 class TestIsolate < MiniTest::Unit::TestCase
