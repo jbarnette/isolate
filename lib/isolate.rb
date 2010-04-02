@@ -8,7 +8,7 @@ require "rubygems/requirement"
 
 class Isolate
 
-  VERSION = "1.10.0" # :nodoc:
+  VERSION = "1.10.1" # :nodoc:
 
   # An isolated Gem, with requirement, environment restrictions, and
   # installation options. Internal use only.
@@ -93,6 +93,8 @@ class Isolate
 
     file = options[:file]
     file = Dir["{Isolate,config/isolate.rb}"].first if TrueClass === file
+
+    FileUtils.mkdir_p @path unless File.directory? @path
 
     instance_eval IO.read(file), file if file
     instance_eval(&block) if block_given?
