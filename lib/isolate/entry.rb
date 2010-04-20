@@ -34,10 +34,10 @@ class Isolate
     # trailing hash. FIX: document well-known keys.
 
     def initialize sandbox, name, *requirements
-      @environments = nil
+      @environments = []
       @name         = name
-      @options      = nil
-      @requirement  = nil
+      @options      = {}
+      @requirement  = Gem::Requirement.default
       @sandbox      = sandbox
 
       update(*requirements)
@@ -76,21 +76,14 @@ class Isolate
       name == spec.name and requirement.satisfied_by? spec.version
     end
 
-    # Updates this entry's environments, options, and requirement. All
-    # are additive. Returns the entry itself. FIX: rewrite, I was in a
-    # very strange mood when I wrote this.
+    # Updates this entry's environments, options, and
+    # requirement. Environments and options are merged, requirement is
+    # replaced.
 
-    def update *requirements
-      @environments &&= @environments | @sandbox.environments
-      @environments ||= @sandbox.environments
-
-      options = Hash === requirements.last ? requirements.pop : {}
-
-      @options.merge! options if @options
-      @options ||= options
-
-      @requirement &&= Gem::Requirement.new(@requirement.as_list | requirements)
-      @requirement ||= Gem::Requirement.new requirements
+    def update *reqs
+      @environments |= @sandbox.environments
+      @options.merge! reqs.pop if Hash === reqs.last
+      @requirement = Gem::Requirement.new reqs unless reqs.empty?
 
       self
     end
