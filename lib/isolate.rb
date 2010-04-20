@@ -1,5 +1,4 @@
 require "isolate/entry"
-require "rubygems/dependency_installer"
 require "rubygems/uninstaller"
 require 'rbconfig'
 
@@ -242,24 +241,9 @@ class Isolate
     padding = Math.log10(installable.size).to_i + 1
     format  = "[%0#{padding}d/%s] Isolating %s (%s)."
 
-    installable.each_with_index do |e, i|
-      log format % [i + 1, installable.size, e.name, e.requirement]
-
-      old         = Gem.sources.dup
-      options     = e.options.merge(:development   => false,
-                                    :generate_rdoc => false,
-                                    :generate_ri   => false,
-                                    :install_dir   => path)
-      source      = options.delete :source
-      args        = options.delete :args
-      Gem.sources += Array(source) if source
-      installer   = Gem::DependencyInstaller.new options
-
-      Gem::Command.build_args = Array(args) if args
-      installer.install e.name, e.requirement
-
-      Gem.sources = old
-      Gem::Command.build_args = nil if args
+    installable.each_with_index do |entry, i|
+      log format % [i + 1, installable.size, entry.name, entry.requirement]
+      entry.install
     end
 
     Gem.source_index.refresh!
