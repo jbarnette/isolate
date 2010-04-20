@@ -31,7 +31,7 @@ class TestIsolateEntry < MiniTest::Unit::TestCase
     assert entry.matches?("test")
     assert !entry.matches?("double secret production")
 
-    @sandbox.environments.clear
+    entry.environments.clear
     assert entry.matches?("double secret production")
   end
 
@@ -41,6 +41,26 @@ class TestIsolateEntry < MiniTest::Unit::TestCase
     assert entry.matches_spec?(spec "hi", "1.1")
     assert !entry.matches_spec?(spec "bye", "1.1")
     assert !entry.matches_spec?(spec "hi", "1.2")
+  end
+
+  def test_update
+    entry = e "hi", "1.1"
+
+    assert_equal [], entry.environments
+
+    @sandbox.environments.concat %w(corge corge plugh)
+    entry.update
+
+    assert_equal %w(corge plugh), entry.environments
+
+    entry.update :foo => :bar
+    entry.update :bar => :baz
+
+    assert_equal({ :foo => :bar, :bar => :baz }, entry.options)
+
+    entry.update :args => "--first"
+    entry.update :args => "--second"
+    assert_equal "--second", entry.options[:args]
   end
 
   def e *args
