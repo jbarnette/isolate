@@ -1,8 +1,7 @@
+require "fileutils"
 require "isolate/entry"
+require "rbconfig"
 require "rubygems/uninstaller"
-require 'rbconfig'
-
-$TESTING ||= false
 
 # Restricts +GEM_PATH+ and +GEM_HOME+ and provides a DSL for
 # expressing your code's runtime Gem dependencies. See README.rdoc for
@@ -74,8 +73,8 @@ class Isolate
     @entries      = []
     @environments = []
 
-    unless $TESTING
-      version = RbConfig::CONFIG['ruby_version']
+    unless options.key?(:versioned) && options[:versioned] == false
+      version = RbConfig::CONFIG["ruby_version"]
       path = File.join(path, version) unless path =~ /#{version}/
     end
 
@@ -88,8 +87,6 @@ class Isolate
 
     file = options[:file]
     file = Dir["{Isolate,config/isolate.rb}"].first if TrueClass === file
-
-    FileUtils.mkdir_p @path unless File.directory? @path unless $TESTING
 
     instance_eval IO.read(file), file if file
     instance_eval(&block) if block_given?
@@ -177,6 +174,7 @@ class Isolate
     @old_ruby_opt  = ENV["RUBYOPT"]
     @old_load_path = $LOAD_PATH.dup
 
+    FileUtils.mkdir_p path
     ENV["GEM_HOME"] = path
 
     unless system?
