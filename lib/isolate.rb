@@ -1,3 +1,4 @@
+require "isolate/entry"
 require "rubygems/dependency_installer"
 require "rubygems/uninstaller"
 require "rubygems/requirement"
@@ -10,21 +11,7 @@ $TESTING ||= false
 # rationale, limitations, and examples.
 
 class Isolate
-
   VERSION = "1.10.1" # :nodoc:
-
-  # An isolated Gem, with requirement, environment restrictions, and
-  # installation options. Internal use only.
-
-  class Entry < Struct.new(:name, :requirement, :environments, :options)
-    def matches? environment # :nodoc:
-      environments.empty? || environments.include?(environment)
-    end
-
-    def matches_spec? spec
-      name == spec.name and requirement.satisfied_by? spec.version
-    end
-  end
 
   attr_reader :entries # :nodoc:
   attr_reader :path # :nodoc:
