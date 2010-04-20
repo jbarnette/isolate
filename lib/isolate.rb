@@ -225,6 +225,9 @@ class Isolate
   # later.
 
   def gem name, *requirements
+    entry = entries.detect { |e| e.name == name }
+    return entry.update(*requirements) if entry
+
     entries << entry = Entry.new(self, name, *requirements)
     entry
   end
