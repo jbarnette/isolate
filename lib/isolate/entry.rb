@@ -1,3 +1,5 @@
+require "rubygems/command"
+require "rubygems/dependency_installer"
 require "rubygems/requirement"
 
 class Isolate
@@ -36,6 +38,26 @@ class Isolate
       @name         = name
 
       update *requirements
+    end
+
+    # Install this entry in the sandbox.
+
+    def install
+      old = Gem.sources.dup
+
+      begin
+        installer = Gem::DependencyInstaller.new :development => false,
+          :generate_rdoc => false, :generate_ri => false,
+          :install_dir => @sandbox.path
+
+        Gem.sources += Array(options[:source]) if options[:source]
+        Gem::Command.build_args = Array(options[:args]) if options[:args]
+
+        installer.install name, requirement
+      ensure
+        Gem.sources = old
+        Gem::Command.build_args = nil
+      end
     end
 
     # Is this entry interested in +environment+?
