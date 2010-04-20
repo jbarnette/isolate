@@ -1,6 +1,6 @@
 require "isolate/entry"
+require "rbconfig"
 require "rubygems/uninstaller"
-require 'rbconfig'
 
 $TESTING ||= false
 
