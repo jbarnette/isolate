@@ -284,6 +284,23 @@ class TestIsolate < MiniTest::Unit::TestCase
     assert_equal "hoe", i.entries.first.name
   end
 
+  def test_path
+    i = Isolate.new "tmp/gems", :versioned => false do
+      path "tmp/foo"
+    end
+
+    assert_equal File.expand_path("tmp/foo"), i.path
+
+    v = RbConfig::CONFIG["ruby_version"]
+    i = Isolate.new "tmp/gems"
+    p = File.expand_path("tmp/gems/#{v}")
+
+    assert_equal p, i.path
+
+    i = Isolate.new "tmp/gems/#{v}"
+    assert_equal p, i.path
+  end
+
   def isolate *args
     opts = { :install => false, :verbose => false, :versioned => false }
     opts.merge! args.pop if Hash === args.last
