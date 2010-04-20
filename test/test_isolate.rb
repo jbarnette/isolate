@@ -10,9 +10,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   WITH_HOE = "test/fixtures/with-hoe"
 
   def setup
-    @isolate = Isolate.new "tmp/gems", :install => false,
-      :verbose => false, :versioned => false
-
+    @isolate = isolate "tmp/gems"
     @env = ENV.to_hash
 
     Gem.loaded_specs.clear
@@ -58,7 +56,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate
-    @isolate = Isolate.new WITH_HOE, :versioned => false
+    @isolate = isolate WITH_HOE
 
     assert_nil Gem.loaded_specs["hoe"]
 
@@ -69,7 +67,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment
-    @isolate = Isolate.new WITH_HOE, :verbose => false, :versioned => false
+    @isolate = isolate WITH_HOE
     @isolate.gem "rubyforge"
 
     @isolate.environment "borg" do
@@ -82,7 +80,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment_explicit
-    @isolate = Isolate.new WITH_HOE, :versioned => false
+    @isolate = isolate WITH_HOE
 
     @isolate.gem "rubyforge"
 
@@ -96,8 +94,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_install
-    @isolate = Isolate.new "tmp/gems", :install => true, :verbose => false
-
+    @isolate = isolate "tmp/gems", :install => true
     @isolate.gem "foo"
 
     # rescuing because activate, well, actually tries to activate
@@ -108,7 +105,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_install_environment
-    @isolate = Isolate.new "tmp/gems", :install => true
+    @isolate = isolate "tmp/gems", :install => true
     @isolate.environment(:nope) { gem "foo" }
 
     @isolate.activate
@@ -123,7 +120,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   # TODO: install with 1 older version, 1 new gem to be installed
 
   def test_cleanup
-    @isolate = Isolate.new WITH_HOE, :verbose => false, :versioned => false
+    @isolate = isolate WITH_HOE, :install => true
     # no gems specified on purpose
     @isolate.activate
 
@@ -240,7 +237,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_initialize
-    i = Isolate.new "foo/gems", :versioned => false
+    i = isolate "foo/gems"
     assert_equal File.expand_path("foo/gems"), i.path
   end
 
@@ -253,7 +250,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_initialize_options
-    i = Isolate.new "foo/gems", :versioned => false
+    i = Isolate.new "foo/gems"
     assert i.install?
     assert i.verbose?
     assert i.cleanup?
@@ -270,6 +267,12 @@ class TestIsolate < MiniTest::Unit::TestCase
 
     i = Isolate.new "foo/gems", :file => "test/fixtures/isolate.rb"
     assert_equal "hoe", i.entries.first.name
+  end
+
+  def isolate *args
+    opts = { :install => false, :verbose => false, :versioned => false }
+    opts.merge! args.pop if Hash === args.last
+    Isolate.new(*(args << opts))
   end
 end
 
