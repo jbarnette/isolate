@@ -12,7 +12,6 @@ class Isolate
 
   attr_reader :entries # :nodoc:
   attr_reader :environments # :nodoc:
-  attr_reader :path # :nodoc:
 
   # Disable Isolate. If a block is provided, isolation will be
   # disabled for the scope of the block.
@@ -72,13 +71,9 @@ class Isolate
     @enabled      = false
     @entries      = []
     @environments = []
+    @options      = options
 
-    unless options.key?(:versioned) && options[:versioned] == false
-      version = RbConfig::CONFIG["ruby_version"]
-      path = File.join(path, version) unless path =~ /#{version}/
-    end
-
-    @path         = File.expand_path path
+    path path
 
     @install      = options.fetch :install, true
     @system       = options.fetch :system,  false
@@ -257,6 +252,19 @@ class Isolate
 
   def log s # :nodoc:
     $stderr.puts s if verbose?
+  end
+
+  def path path = nil
+    if path
+      unless @options.key?(:versioned) && @options[:versioned] == false
+        version = RbConfig::CONFIG["ruby_version"]
+        path = File.join(path, version) unless path =~ /#{version}/
+      end
+
+      @path = File.expand_path path
+    end
+
+    @path
   end
 
   def system? # :nodoc:
