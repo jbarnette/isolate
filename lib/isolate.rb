@@ -8,7 +8,7 @@ require "rubygems/uninstaller"
 # rationale, limitations, and examples.
 
 class Isolate
-  VERSION = "1.10.1" # :nodoc:
+  VERSION = "2.0.0.pre.0" # :nodoc:
 
   attr_reader :entries # :nodoc:
   attr_reader :environments # :nodoc:
