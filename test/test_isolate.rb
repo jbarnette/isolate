@@ -213,7 +213,7 @@ class TestIsolate < MiniTest::Unit::TestCase
     assert_equal :baz, g.options[:bar]
 
     @isolate.gem "foo", "> 1.7"
-    assert_equal Gem::Requirement.new(">= 0", "> 1.7"), g.requirement
+    assert_equal Gem::Requirement.new("> 1.7"), g.requirement
 
     @isolate.environment :corge do
       gem "foo"
@@ -247,6 +247,21 @@ class TestIsolate < MiniTest::Unit::TestCase
     end
 
     assert_equal "hoe", i.entries.first.name
+  end
+
+  # First the specifically requested file, then the block (if given),
+  # THEN the local override file (if it exists).
+
+  def test_initialize_files_with_block
+    i = Isolate.new "foo/gems", :file => "test/fixtures/override.rb" do
+      environment :foo do
+        gem "monkey", :args => "--panic"
+      end
+    end
+
+    monkey = i.entries.first
+    assert_equal "--asplode", monkey.options[:args]
+    assert_equal %w(foo bar), monkey.environments
   end
 
   def test_initialize_options
