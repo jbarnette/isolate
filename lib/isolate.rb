@@ -1,3 +1,4 @@
+require "fileutils"
 require "isolate/entry"
 require "rbconfig"
 require "rubygems/uninstaller"
@@ -87,8 +88,6 @@ class Isolate
     file = options[:file]
     file = Dir["{Isolate,config/isolate.rb}"].first if TrueClass === file
 
-    FileUtils.mkdir_p @path unless File.directory? @path unless $TESTING
-
     instance_eval IO.read(file), file if file
     instance_eval(&block) if block_given?
   end
@@ -175,6 +174,7 @@ class Isolate
     @old_ruby_opt  = ENV["RUBYOPT"]
     @old_load_path = $LOAD_PATH.dup
 
+    FileUtils.mkdir_p path
     ENV["GEM_HOME"] = path
 
     unless system?
