@@ -33,10 +33,9 @@ class Isolate
 
     def initialize sandbox, name, *requirements
       @sandbox      = sandbox
-      @environments = sandbox.environments
       @name         = name
-      @options      = Hash === requirements.last ? requirements.pop : {}
-      @requirement  = Gem::Requirement.new requirements
+
+      update *requirements
     end
 
     # Is this entry interested in +environment+?
@@ -50,6 +49,25 @@ class Isolate
 
     def matches_spec? spec
       name == spec.name and requirement.satisfied_by? spec.version
+    end
+
+    # Updates this entry's environments, options, and requirement. All
+    # are additive. Returns the entry itself. FIX: rewrite, I was in a
+    # very strange mood when I wrote this.
+
+    def update *requirements
+      @environments &&= @environments | @sandbox.environments
+      @environments ||= @sandbox.environments
+
+      options = Hash === requirements.last ? requirements.pop : {}
+
+      @options.merge! options if @options
+      @options ||= options
+
+      @requirement &&= Gem::Requirement.new(@requirement.as_list | requirements)
+      @requirement ||= Gem::Requirement.new requirements
+
+      self
     end
   end
 end
