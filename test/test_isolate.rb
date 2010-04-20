@@ -10,8 +10,10 @@ class TestIsolate < MiniTest::Unit::TestCase
   WITH_HOE = "test/fixtures/with-hoe"
 
   def setup
-    @isolate = Isolate.new "tmp/gems", :install => false, :verbose => false
-    @env     = ENV.to_hash
+    @isolate = Isolate.new "tmp/gems", :install => false,
+      :verbose => false, :versioned => false
+
+    @env = ENV.to_hash
 
     Gem.loaded_specs.clear
   end
@@ -46,7 +48,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   def test_self_gems
     assert_nil Isolate.instance
 
-    Isolate.gems WITH_HOE do
+    Isolate.gems WITH_HOE, :versioned => false do
       gem "hoe"
     end
 
@@ -56,7 +58,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate
-    @isolate = Isolate.new WITH_HOE
+    @isolate = Isolate.new WITH_HOE, :versioned => false
 
     assert_nil Gem.loaded_specs["hoe"]
 
@@ -67,7 +69,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment
-    @isolate = Isolate.new WITH_HOE, :verbose => false
+    @isolate = Isolate.new WITH_HOE, :verbose => false, :versioned => false
     @isolate.gem "rubyforge"
 
     @isolate.environment "borg" do
@@ -80,7 +82,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_activate_environment_explicit
-    @isolate = Isolate.new WITH_HOE
+    @isolate = Isolate.new WITH_HOE, :versioned => false
 
     @isolate.gem "rubyforge"
 
@@ -121,7 +123,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   # TODO: install with 1 older version, 1 new gem to be installed
 
   def test_cleanup
-    @isolate = Isolate.new WITH_HOE, :verbose => false
+    @isolate = Isolate.new WITH_HOE, :verbose => false, :versioned => false
     # no gems specified on purpose
     @isolate.activate
 
@@ -238,7 +240,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_initialize
-    i = Isolate.new "foo/gems"
+    i = Isolate.new "foo/gems", :versioned => false
     assert_equal File.expand_path("foo/gems"), i.path
   end
 
@@ -251,7 +253,7 @@ class TestIsolate < MiniTest::Unit::TestCase
   end
 
   def test_initialize_options
-    i = Isolate.new "foo/gems"
+    i = Isolate.new "foo/gems", :versioned => false
     assert i.install?
     assert i.verbose?
     assert i.cleanup?
