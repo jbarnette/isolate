@@ -1,6 +1,5 @@
-require "rubygems/dependency_installer"
+require "isolate/entry"
 require "rubygems/uninstaller"
-require "rubygems/requirement"
 require 'rbconfig'
 
 $TESTING ||= false
@@ -10,23 +9,10 @@ $TESTING ||= false
 # rationale, limitations, and examples.
 
 class Isolate
-
   VERSION = "1.10.1" # :nodoc:
 
-  # An isolated Gem, with requirement, environment restrictions, and
-  # installation options. Internal use only.
-
-  class Entry < Struct.new(:name, :requirement, :environments, :options)
-    def matches? environment # :nodoc:
-      environments.empty? || environments.include?(environment)
-    end
-
-    def matches_spec? spec
-      name == spec.name and requirement.satisfied_by? spec.version
-    end
-  end
-
   attr_reader :entries # :nodoc:
+  attr_reader :environments # :nodoc:
   attr_reader :path # :nodoc:
 
   # Disable Isolate. If a block is provided, isolation will be
@@ -238,18 +224,10 @@ class Isolate
   # later.
 
   def gem name, *requirements
-    options = Hash === requirements.last ? requirements.pop : {}
+    entry = entries.detect { |e| e.name == name }
+    return entry.update(*requirements) if entry
 
-    requirement = if requirements.empty? then
-                    Gem::Requirement.default
-                  else
-                    Gem::Requirement.new requirements
-                  end
-
-    entry = Entry.new name, requirement, @environments,  options
-
-    entries << entry
-
+    entries << entry = Entry.new(self, name, *requirements)
     entry
   end
 
@@ -263,24 +241,9 @@ class Isolate
     padding = Math.log10(installable.size).to_i + 1
     format  = "[%0#{padding}d/%s] Isolating %s (%s)."
 
-    installable.each_with_index do |e, i|
-      log format % [i + 1, installable.size, e.name, e.requirement]
-
-      old         = Gem.sources.dup
-      options     = e.options.merge(:development   => false,
-                                    :generate_rdoc => false,
-                                    :generate_ri   => false,
-                                    :install_dir   => path)
-      source      = options.delete :source
-      args        = options.delete :args
-      Gem.sources += Array(source) if source
-      installer   = Gem::DependencyInstaller.new options
-
-      Gem::Command.build_args = Array(args) if args
-      installer.install e.name, e.requirement
-
-      Gem.sources = old
-      Gem::Command.build_args = nil if args
+    installable.each_with_index do |entry, i|
+      log format % [i + 1, installable.size, entry.name, entry.requirement]
+      entry.install
     end
 
     Gem.source_index.refresh!

@@ -203,6 +203,30 @@ class TestIsolate < MiniTest::Unit::TestCase
     assert_equal Gem::Requirement.create(">= 0"), g.requirement
   end
 
+  def test_gem_multi_calls
+    g  = @isolate.gem "foo"
+    g2 = @isolate.gem "foo", :foo => :bar
+
+    @isolate.gem "foo", :bar => :baz
+
+    assert_same g, g2
+    assert_equal :bar, g.options[:foo]
+    assert_equal :baz, g.options[:bar]
+
+    @isolate.gem "foo", "> 1.7"
+    assert_equal Gem::Requirement.new(">= 0", "> 1.7"), g.requirement
+
+    @isolate.environment :corge do
+      gem "foo"
+    end
+
+    @isolate.environment :plurgh do
+      gem "foo"
+    end
+
+    assert_equal %w(corge plurgh), g.environments
+  end
+
   def test_gem_multi_requirements
     g = @isolate.gem "foo", "= 1.0", "< 2.0"
     assert_equal Gem::Requirement.create(["= 1.0", "< 2.0"]), g.requirement
