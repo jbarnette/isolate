@@ -85,11 +85,13 @@ class Isolate
     @verbose      = options.fetch :verbose, true
     @cleanup      = @install && options.fetch(:cleanup, true)
 
-    file = options[:file]
-    file = Dir["{Isolate,config/isolate.rb}"].first if TrueClass === file
+    file  = options[:file]
+    file  = Dir["{Isolate,config/isolate.rb}"].first if TrueClass === file
+    local = "#{file}.local" if file
 
-    instance_eval IO.read(file), file if file
-    instance_eval(&block) if block_given?
+    instance_eval IO.read(file), file, 1   if file
+    instance_eval(&block)                  if block_given?
+    instance_eval IO.read(local), local, 1 if local && File.exist?(local)
   end
 
   # Activate this set of isolated entries, respecting an optional
