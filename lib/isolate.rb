@@ -1,7 +1,6 @@
 require "isolate/entry"
 require "rubygems/dependency_installer"
 require "rubygems/uninstaller"
-require "rubygems/requirement"
 require 'rbconfig'
 
 $TESTING ||= false
@@ -14,6 +13,7 @@ class Isolate
   VERSION = "1.10.1" # :nodoc:
 
   attr_reader :entries # :nodoc:
+  attr_reader :environments # :nodoc:
   attr_reader :path # :nodoc:
 
   # Disable Isolate. If a block is provided, isolation will be
@@ -225,18 +225,7 @@ class Isolate
   # later.
 
   def gem name, *requirements
-    options = Hash === requirements.last ? requirements.pop : {}
-
-    requirement = if requirements.empty? then
-                    Gem::Requirement.default
-                  else
-                    Gem::Requirement.new requirements
-                  end
-
-    entry = Entry.new name, requirement, @environments,  options
-
-    entries << entry
-
+    entries << entry = Entry.new(self, name, *requirements)
     entry
   end
 
