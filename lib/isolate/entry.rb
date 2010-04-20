@@ -34,10 +34,13 @@ class Isolate
     # trailing hash. FIX: document well-known keys.
 
     def initialize sandbox, name, *requirements
-      @sandbox      = sandbox
+      @environments = nil
       @name         = name
+      @options      = nil
+      @requirement  = nil
+      @sandbox      = sandbox
 
-      update *requirements
+      update(*requirements)
     end
 
     # Install this entry in the sandbox.
