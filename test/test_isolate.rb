@@ -31,7 +31,7 @@ class TestIsolate < Isolate::Test
   def test_self_gems
     assert_nil Isolate.instance
 
-    Isolate.gems WITH_HOE, :versioned => false do
+    Isolate.gems WITH_HOE, :multiruby => false do
       gem "hoe"
     end
 
