@@ -203,6 +203,11 @@ class Isolate
       $stderr.puts s if verbose?
     end
 
+    def options options = nil
+      @options.merge! options if options
+      @options
+    end
+
     def path path = nil
       if path
         unless @options.key?(:versioned) && @options[:versioned] == false

@@ -209,6 +209,11 @@ class TestIsolateSandbox < Isolate::Test
     assert_equal Gem::Requirement.new("2.0"), monkey.requirement
   end
 
+  def test_options
+    @sandbox.options :hello => :monkey
+    assert_equal :monkey, @sandbox.options[:hello]
+  end
+
   def test_path
     s = sandbox :versioned => false do
       path "tmp/foo"
