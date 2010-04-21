@@ -169,7 +169,7 @@ class TestIsolateSandbox < Isolate::Test
 
     assert_equal [], s.entries
     assert_equal [], s.environments
-    assert_match(/tmp\/gems/, s.path)
+    assert_match(/tmp\/isolate/, s.path)
 
     assert s.cleanup?
     assert s.install?
@@ -223,11 +223,11 @@ class TestIsolateSandbox < Isolate::Test
 
     v = RbConfig::CONFIG.values_at("ruby_install_name", "ruby_version").join "-"
     s = sandbox :multiruby => true
-    p = File.expand_path("tmp/gems/#{v}")
+    p = File.expand_path("tmp/isolate/#{v}")
 
     assert_equal p, s.path
 
-    s = sandbox :path => "tmp/gems/#{v}", :multiruby => false
+    s = sandbox :path => "tmp/isolate/#{v}", :multiruby => false
     assert_equal p, s.path
   end
 

@@ -19,8 +19,7 @@ class Isolate
       @files        = []
       @options      = options
 
-      # FIX: tmp/isolate for 2.0? Not sure.
-      path options.fetch(:path, "tmp/gems")
+      path options.fetch(:path, "tmp/isolate")
 
       file, local = nil
 
