@@ -19,7 +19,7 @@ class Isolate
       $LOAD_PATH.replace @lp
       $LOADED_FEATURES.replace @lf
 
-      FileUtils.rm_rf "tmp/gems"
+      FileUtils.rm_rf "tmp/isolate"
     end
   end
 end
