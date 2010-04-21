@@ -1,7 +1,4 @@
-require "isolate/entry"
 require "isolate/sandbox"
-require "rbconfig"
-require "rubygems/uninstaller"
 
 # Restricts +GEM_PATH+ and +GEM_HOME+ and provides a DSL for
 # expressing your code's runtime Gem dependencies. See README.rdoc for
