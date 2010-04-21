@@ -210,9 +210,11 @@ class Isolate
 
     def path path = nil
       if path
-        unless @options.key?(:versioned) && @options[:versioned] == false
-          version = RbConfig::CONFIG["ruby_version"]
-          path = File.join(path, version) unless path =~ /#{version}/
+        unless @options.key?(:multiruby) && @options[:multiruby] == false
+          suffix = RbConfig::CONFIG.
+            values_at("ruby_install_name", "ruby_version").join "-"
+
+          path = File.join(path, suffix) unless path =~ /#{suffix}/
         end
 
         @path = File.expand_path path
@@ -229,8 +231,8 @@ class Isolate
       @options.fetch :verbose, true
     end
 
-    def versioned?
-      @options.fetch :versioned, true
+    def multiruby?
+      @options.fetch :multiruby, true
     end
   end
 end

@@ -175,13 +175,13 @@ class TestIsolateSandbox < Isolate::Test
     assert s.install?
     assert s.system?
     assert s.verbose?
-    assert s.versioned?
+    assert s.multiruby?
   end
 
   def test_initialize_override_defaults
     s = Isolate::Sandbox.new :path => "x", :cleanup => false,
       :install => false, :system => false,
-      :verbose => false, :versioned => false
+      :verbose => false, :multiruby => false
 
     assert_equal File.expand_path("x"), s.path
 
@@ -189,7 +189,7 @@ class TestIsolateSandbox < Isolate::Test
     refute s.install?
     refute s.system?
     refute s.verbose?
-    refute s.versioned?
+    refute s.multiruby?
   end
 
   # First the specifically requested file, then the block (if given),
@@ -215,19 +215,19 @@ class TestIsolateSandbox < Isolate::Test
   end
 
   def test_path
-    s = sandbox :versioned => false do
+    s = sandbox :multiruby => false do
       path "tmp/foo"
     end
 
     assert_equal File.expand_path("tmp/foo"), s.path
 
-    v = RbConfig::CONFIG["ruby_version"]
-    s = sandbox :versioned => true
+    v = RbConfig::CONFIG.values_at("ruby_install_name", "ruby_version").join "-"
+    s = sandbox :multiruby => true
     p = File.expand_path("tmp/gems/#{v}")
 
     assert_equal p, s.path
 
-    s = sandbox :path => "tmp/gems/#{v}", :versioned => false
+    s = sandbox :path => "tmp/gems/#{v}", :multiruby => false
     assert_equal p, s.path
   end
 
@@ -246,7 +246,7 @@ class TestIsolateSandbox < Isolate::Test
       :install   => false,
       :system    => false,
       :verbose   => false,
-      :versioned => false
+      :multiruby => false
     }
 
     opts.merge! args.pop if Hash === args.last
