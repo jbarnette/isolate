@@ -6,7 +6,7 @@ class TestIsolate < Isolate::Test
   WITH_HOE = "test/fixtures/with-hoe"
 
   def teardown
-    Isolate.instance.disable if Isolate.instance
+    Isolate.sandbox.disable if Isolate.sandbox
     super
   end
 
@@ -28,15 +28,15 @@ class TestIsolate < Isolate::Test
     assert_equal "baz", Isolate.env
   end
 
-  def test_self_gems
-    assert_nil Isolate.instance
+  def test_self_now!
+    assert_nil Isolate.sandbox
 
-    Isolate.gems WITH_HOE, :multiruby => false do
+    Isolate.now! :path => WITH_HOE, :multiruby => false do
       gem "hoe"
     end
 
-    refute_nil Isolate.instance
-    assert_equal File.expand_path(WITH_HOE), Isolate.instance.path
-    assert_equal "hoe", Isolate.instance.entries.first.name
+    refute_nil Isolate.sandbox
+    assert_equal File.expand_path(WITH_HOE), Isolate.sandbox.path
+    assert_equal "hoe", Isolate.sandbox.entries.first.name
   end
 end
