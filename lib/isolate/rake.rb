@@ -3,7 +3,7 @@ namespace :isolate do
   task :debug do
     require "pathname"
 
-    sandbox = Isolate.instance
+    sandbox = Isolate.sandbox
     here    = Pathname Dir.pwd
     path    = Pathname(sandbox.path).relative_path_from here
     files   = sandbox.files.map { |f| Pathname(f) }

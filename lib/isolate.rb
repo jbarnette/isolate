@@ -9,51 +9,35 @@ require "rubygems/uninstaller"
 # rationale, limitations, and examples.
 
 class Isolate
-  VERSION = "2.0.0.pre.0" # :nodoc:
 
-  attr_reader :entries # :nodoc:
-  attr_reader :environments # :nodoc:
+  # Duh.
+
+  VERSION = "2.0.0.pre.0"
 
   # Disable Isolate. If a block is provided, isolation will be
   # disabled for the scope of the block.
 
   def self.disable &block
-    instance.disable(&block)
+    sandbox.disable(&block)
   end
 
-  def self.env # :nodoc:
+  def self.env
     ENV["ISOLATE_ENV"] || ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+  end
+
+  @@sandbox = nil
+
+  def self.sandbox
+    @@sandbox
   end
 
   # Declare an isolated RubyGems environment, installed in +path+. Any
   # block given will be <tt>instance_eval</tt>ed, see Isolate#gem and
   # Isolate#environment for the sort of stuff you can do.
-  #
-  # If you'd like to specify gems and environments in a separate file,
-  # you can pass an optional <tt>:file</tt> option.
-  #
-  # Option defaults:
-  #
-  #    {
-  #      :cleanup => true,
-  #      :install => true,
-  #      :system  => false,
-  #      :verbose => true
-  #    }
 
-  def self.gems path, options = {}, &block
-    @@instance = Isolate::Sandbox.new options.merge(:path => path), &block
-    @@instance.activate
-  end
-
-  @@instance = nil
-
-  def self.instance # :nodoc:
-    @@instance
-  end
-
-  def self.now! &block #:nodoc:
-    gems "tmp/gems", &block
+  def self.now! options = {}, &block
+    @@sandbox = Isolate::Sandbox.new options, &block
+    @@sandbox.activate
   end
 
   # Poke RubyGems, we've probably monkeyed with a bunch of paths and
