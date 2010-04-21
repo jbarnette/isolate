@@ -1,18 +1,43 @@
 namespace :isolate do
-  desc "Generate a .gems manifest for your isolated gems."
-  task :dotgems, [:env] do |_, args|
-    env = args.env || Isolate.env
+  desc "Show current isolated environment."
+  task :debug do
+    require "pathname"
 
-    File.open ".gems", "wb" do |f|
-      Isolate.instance.entries.each do |entry|
-        next unless entry.matches? env
+    sandbox = Isolate.instance
+    here    = Pathname Dir.pwd
+    path    = Pathname(sandbox.path).relative_path_from here
+    files   = sandbox.files.map { |f| Pathname(f) }
 
-        gems  = [entry.name]
-        gems << "--version '#{entry.requirement}'"
-        gems << "--source #{entry.options[:source]}" if entry.options[:source]
+    puts
+    puts "  sandbox: #{path}"
+    puts "      env: #{Isolate.env}"
 
-        f.puts gems.join(" ")
+    files.collect! { |f| f.absolute? ? f.relative_path_from(here) : f }
+    puts "    files: #{files.join ', '}"
+    puts
+
+    %w(cleanup? enabled? install? multiruby? system? verbose?).each do |flag|
+      printf "%10s %s\n", flag, sandbox.send(flag)
+    end
+
+    grouped = Hash.new { |h, k| h[k] = [] }
+    sandbox.entries.each { |e| grouped[e.environments] << e }
+
+    puts
+
+    grouped.keys.sort.each do |envs|
+      title   = "all environments" if envs.empty?
+      title ||= envs.join ", "
+
+      puts "[#{title}]"
+
+      grouped[envs].each do |e|
+        gem = "gem #{e.name}, #{e.requirement}"
+        gem << ", #{e.options.inspect}" unless e.options.empty?
+        puts gem
       end
+
+      puts
     end
   end
 
