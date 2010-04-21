@@ -52,8 +52,8 @@ class Isolate
     @@instance
   end
 
-  def self.now! #:nodoc:
-    gems "tmp/gems"
+  def self.now! &block #:nodoc:
+    gems "tmp/gems", &block
   end
 
   # Poke RubyGems, we've probably monkeyed with a bunch of paths and

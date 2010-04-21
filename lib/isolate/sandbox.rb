@@ -7,7 +7,7 @@ class Isolate
   class Sandbox
     attr_reader :entries # :nodoc:
     attr_reader :environments # :nodoc:
-
+    attr_reader :files # :nodoc:
 
     # Create a new Isolate instance. See Isolate.gems for the public
     # API. You probably don't want to use this constructor directly.
@@ -16,6 +16,7 @@ class Isolate
       @enabled      = false
       @entries      = []
       @environments = []
+      @files        = []
       @options      = options
 
       # FIX: tmp/isolate for 2.0? Not sure.
@@ -28,9 +29,15 @@ class Isolate
         local = "#{file}.local" if file
       end
 
-      load file             if file
-      instance_eval(&block) if block_given?
-      load local            if local && File.exist?(local)
+      load file if file
+
+      if block_given?
+        block.to_s =~ /\@([^:]+):/
+        files << ($1 || "inline block")
+        instance_eval(&block)
+      end
+
+      load local if local && File.exist?(local)
     end
 
     # Activate this set of isolated entries, respecting an optional
@@ -196,6 +203,7 @@ class Isolate
     end
 
     def load file # :nodoc:
+      files << file
       instance_eval IO.read(file), file, 1
     end
 
@@ -203,6 +211,10 @@ class Isolate
       $stderr.puts s if verbose?
     end
 
+
+    def multiruby?
+      @options.fetch :multiruby, true
+    end
     def options options = nil
       @options.merge! options if options
       @options
@@ -229,10 +241,6 @@ class Isolate
 
     def verbose?
       @options.fetch :verbose, true
-    end
-
-    def multiruby?
-      @options.fetch :multiruby, true
     end
   end
 end
