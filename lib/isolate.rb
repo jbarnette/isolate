@@ -1,4 +1,3 @@
-require "fileutils"
 require "isolate/entry"
 require "isolate/sandbox"
 require "rbconfig"
