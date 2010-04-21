@@ -134,12 +134,20 @@ module Isolate
         # subshells, and the only way I can think of to do that is by
         # abusing RUBYOPT.
 
-        ENV["RUBYOPT"]  = "#{ENV['RUBYOPT']} -I#{File.dirname(__FILE__)}"
+        dirname = Regexp.escape File.dirname(__FILE__)
+
+        unless ENV["RUBYOPT"] =~ /\s+-I\s*#{dirname}\b/
+          ENV["RUBYOPT"] = "#{ENV['RUBYOPT']} -I#{File.dirname(__FILE__)}"
+        end
+
         ENV["GEM_PATH"] = path
       end
 
       bin = File.join path, "bin"
-      ENV["PATH"] = [bin, ENV["PATH"]].join File::PATH_SEPARATOR
+
+      unless ENV["PATH"].split(File::PATH_SEPARATOR).include? bin
+        ENV["PATH"] = [bin, ENV["PATH"]].join File::PATH_SEPARATOR
+      end
 
       Isolate.refresh
       Gem.path.unshift path if system?

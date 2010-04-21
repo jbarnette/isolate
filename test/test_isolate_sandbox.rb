@@ -104,6 +104,26 @@ class TestIsolateSandbox < Isolate::Test
     assert_equal [@sandbox.path], Gem.path
   end
 
+  def test_enable_idempotent_path_env
+    bin  = File.join @sandbox.path, "bin"
+    path = ENV["PATH"] = [bin, ENV["PATH"]].join(File::PATH_SEPARATOR)
+
+    @sandbox.enable
+    assert_equal path, ENV["PATH"]
+  end
+
+  def test_idempotent_rubyopt_env
+    @sandbox.enable
+    rubyopt = ENV["RUBYOPT"]
+    @sandbox.disable
+
+    refute_equal rubyopt, ENV["RUBYOPT"]
+
+    ENV["RUBYOPT"] = rubyopt
+    @sandbox.enable
+    assert_equal rubyopt, ENV["RUBYOPT"]
+  end
+
   def test_environment
     @sandbox.gem "none"
 
