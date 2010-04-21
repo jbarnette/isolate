@@ -8,7 +8,7 @@ require "rubygems/uninstaller"
 # expressing your code's runtime Gem dependencies. See README.rdoc for
 # rationale, limitations, and examples.
 
-class Isolate
+module Isolate
 
   # Duh.
 
