@@ -38,12 +38,12 @@ same name. Version specifiers are optional.
     require "rubygems"
     require "isolate"
 
-    Isolate.gems "tmp/gems" do
+    Isolate.now! do
       gem "johnson", "~> 1.1" # or maybe...
       gem "jbarnette-johnson"
     end
 
-At the end of the <tt>Isolate.gems</tt> block, you're completely
+At the end of the <tt>Isolate.now!</tt> block, you're completely
 isolated. <tt>GEM_PATH</tt> and <tt>GEM_HOME</tt> are set, and all
 your specified gems have been activated.
 
@@ -61,7 +61,7 @@ Sometimes different sets of gems are appropriate at different
 times. Isolate allows you to restrict gems by 'environment' (which is
 really just a string passed in when things are activated).
 
-    Isolate.gems "tmp/gems" do
+    Isolate.now! do
       gem "intercession"
 
       environment :test, :cucumber do
@@ -76,9 +76,9 @@ your environment.
 
 === Options
 
-Any trailing hash args to <tt>gem</tt> are passed to
-<tt>Gem::DependencyInstaller</tt> as options. There are two special
-exceptions, <tt>:source</tt> and <tt>:args</tt>.
+Any trailing hash args to <tt>gem</tt> are attached to Isolate's gem
+entry as options. There are two well-known keys, <tt>:source</tt>
+and <tt>:args</tt>.
 
     # explicitly specify gem source
     gem "jbarnette-johnson", :source => "http://gems.github.com"
@@ -88,16 +88,16 @@ exceptions, <tt>:source</tt> and <tt>:args</tt>.
 
 === An External File
 
-If you'd like to have a separate file that *just* has your +gem+ and
-+environment+ calls in it, you can pass an optional <tt>:file</tt>
-option instead of (or in addition to) providing a block.
+It's nice to play use <tt>Isolate.now!</tt> inline, but it's better to
+keep all your stuff in an external file. This is supported by default:
 
-    # keepin' things clean
-    Isolate.gems "tmp/gems", :file => "config/isolate.rb"
+    Isolate.now!
 
-If you pass <tt>:file => true</tt> instead, Isolate will try to load
-from <tt>./Isolate</tt> and <tt>./config/isolate.rb</tt>, in that
-order.
+This will look for `Isolate` and `config/isolate.rb` files relative to
+the current directory, and `instance_eval` the first one it finds. If
+there's another matching file with a `.local` extension, Isolate will
+grab that one too. This makes it easy to have additional config that's
+specific to a deployment or developer.
 
 === Installing Isolated Gems
 
@@ -106,19 +106,17 @@ automatically. You can pass the <tt>:cleanup</tt>, <tt>:install</tt>,
 and <tt>:verbose</tt> options to control things:
 
     # don't remove unnecesary gems
-    Isolate.gems "tmp/gems", :cleanup => false do
-      ...
-    end
+    Isolate.now!, :cleanup => false
 
     # install, but quietly
-    Isolate.gems "tmp/gems", :verbose => false do
-      ...
-    end
+    Isolate.now! :verbose => false
 
     # don't install
-    Isolate.gems "tmp/gems", :install => false do
-      ...
-    end
+    Isolate.now! :install => false
+
+All of these options can be set inside your `Isolate` file, too:
+
+    options :cleanup => false, :verbose => false
 
 === Interaction and Rake
 
@@ -139,29 +137,22 @@ by any of your gems are available on your PATH.
     # run a new isolated subshell
     $ rake isolate:sh
 
-==== Exporting
+==== What's up?
 
-Isolate can generate a <tt>.gems</tt> manifest file in the root
-directory of your project. <tt>.gems</tt> is used (among other things)
-to specify project dependencies on Heroku.
+    $ rake isolate:debug
 
-    $ rake isolate:dotgems
-
-=== A Rails Example
+=== A Rails 2 Example
 
 Here's a quick example (extracted from a real project) of how to use
 Isolate with Rails. This project doesn't use vendored Rails, and
 doesn't want to depend on any system gems (except isolate, of course).
 
-Gem dependencies are defined in <tt>config/preinitializer.rb</tt>. If
-you want, you could just as easily put them in
-<tt>config/{gems,deps,isolate}.rb</tt>, just make sure it's loaded in
-the preinitializer:
+Let's edit <tt>config/preinitializer.rb</tt>:
 
     require "rubygems"
     require "isolate"
 
-    Isolate.gems "tmp/gems", :file => "config/isolate.rb"
+    Isolate.now!
 
 In <tt>config/isolate.rb</tt>:
 
@@ -196,9 +187,8 @@ In <tt>config/isolate.rb</tt>:
       gem "webrat"       # integration tests
     end
 
-You could specify all this inside an <tt>Isolate.gems</tt> block in
-<tt>config/preinitializer.rb</tt>, of course, but sometimes it's nicer
-to have an external file that's just your dependency manifest.
+You could specify all this inside the <tt>Isolate.now!</tt> block, of
+course, but keeping everything in an external file is nicer.
 
 Since this is loaded in the preinitializer, Isolate will install and
 activate the all gems before Rails loads. The current environment is
@@ -224,7 +214,7 @@ as putting:
 before the <tt>Hoe.spec</tt> call in your <tt>Rakefile</tt>.
 
 If you're not using Hoe, you can just do a regular
-<tt>Isolate.gems</tt> block at the top of your Rakefile.
+<tt>Isolate.now!</tt> block at the top of your Rakefile.
 
 == Installation
 
