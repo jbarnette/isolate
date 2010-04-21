@@ -2,7 +2,7 @@ require "rubygems/command"
 require "rubygems/dependency_installer"
 require "rubygems/requirement"
 
-class Isolate
+module Isolate
 
   # An isolated Gem, with requirement, environment restrictions, and
   # installation options. Internal use only.

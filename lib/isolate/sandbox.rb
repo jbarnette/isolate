@@ -3,7 +3,7 @@ require "isolate/entry"
 require "rbconfig"
 require "rubygems/uninstaller"
 
-class Isolate
+module Isolate
   class Sandbox
     attr_reader :entries # :nodoc:
     attr_reader :environments # :nodoc:

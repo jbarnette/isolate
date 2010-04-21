@@ -1,7 +1,7 @@
 require "isolate"
 require "minitest/autorun"
 
-class Isolate
+module Isolate
   class Test < MiniTest::Unit::TestCase
     def setup
       Isolate.refresh
