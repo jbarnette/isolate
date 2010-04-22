@@ -1,6 +1,8 @@
+require "rubygems"
 require "rubygems/command"
 require "rubygems/dependency_installer"
 require "rubygems/requirement"
+require "rubygems/version"
 
 module Isolate
 
@@ -35,12 +37,24 @@ module Isolate
 
     def initialize sandbox, name, *requirements
       @environments = []
+      @file         = nil
       @name         = name
       @options      = {}
       @requirement  = Gem::Requirement.default
       @sandbox      = sandbox
 
+      if File.file? @name
+        @file = File.expand_path @name
+
+        @name = File.basename(@file, ".gem").
+          gsub(/-#{Gem::Version::VERSION_PATTERN}$/, "")
+      end
+
       update(*requirements)
+    end
+
+    def activate
+      Gem.activate name, *requirement.as_list
     end
 
     # Install this entry in the sandbox.
@@ -50,7 +64,8 @@ module Isolate
       old = Gem.sources.dup
 
       begin
-        Dir.chdir File.join(@sandbox.path, "cache")
+        cache = File.join @sandbox.path, "cache"
+        Dir.chdir cache if File.directory? cache
 
         installer = Gem::DependencyInstaller.new :development => false,
           :generate_rdoc => false, :generate_ri => false,
@@ -59,7 +74,7 @@ module Isolate
         Gem.sources += Array(options[:source]) if options[:source]
         Gem::Command.build_args = Array(options[:args]) if options[:args]
 
-        installer.install name, requirement
+        installer.install @file || name, requirement
       ensure
         Dir.chdir dir
         Gem.sources = old
