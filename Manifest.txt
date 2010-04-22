@@ -7,9 +7,11 @@ lib/hoe/isolate.rb
 lib/isolate.rb
 lib/isolate/now.rb
 lib/isolate/entry.rb
+lib/isolate/now.rb
 lib/isolate/rake.rb
 lib/isolate/sandbox.rb
 lib/isolate/test.rb
+test/fixtures/blort-0.0.gem
 test/fixtures/isolate.rb
 test/fixtures/override.rb
 test/fixtures/override.rb.local
