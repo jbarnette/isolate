@@ -55,7 +55,7 @@ module Isolate
       install env if install?
 
       entries.each do |e|
-        Gem.activate e.name, *e.requirement.as_list if e.matches? env
+        e.activate if e.matches? env
       end
 
       cleanup if cleanup?
