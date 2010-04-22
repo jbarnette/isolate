@@ -65,12 +65,15 @@ module Isolate
 
     def cleanup # :nodoc:
       activated = Gem.loaded_specs.values.map { |s| s.full_name }
+      available = Gem.source_index.gems.values.sort
 
-      extra = Gem.source_index.gems.values.sort.reject { |spec|
-        !spec.loaded_from.include?(path) or
-        activated.include? spec.full_name or
-        entries.any? { |e| e.matches? spec }
-      }
+      extra = available.reject do |spec|
+        active = activated.include? spec.full_name
+        entry  = entries.detect { |e| e.matches_spec? spec }
+        system = !spec.loaded_from.include?(path)
+
+        active or entry or system
+      end
 
       return if extra.empty?
 
