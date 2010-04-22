@@ -1,11 +1,13 @@
 require "isolate/entry"
-require "minitest/autorun"
-require "rubygems/version"
+require "isolate/test"
 
-class TestIsolateEntry < MiniTest::Unit::TestCase
+class TestIsolateEntry < Isolate::Test
   def setup
     @sandbox = Object.new
     def @sandbox.environments; @e ||= [] end
+    def @sandbox.path; "tmp/gems" end
+
+    super
   end
 
   def test_initialize
@@ -22,6 +24,12 @@ class TestIsolateEntry < MiniTest::Unit::TestCase
 
     assert_equal Gem::Requirement.default, entry.requirement
     assert_equal({}, entry.options)
+  end
+
+  def test_install_file
+    entry = e "test/fixtures/blort-0.0.gem"
+    entry.install
+    assert File.file?("tmp/gems/specifications/blort-0.0.gemspec")
   end
 
   def test_matches?
