@@ -128,7 +128,7 @@ class Isolate
     extra = Gem.source_index.gems.values.sort.reject { |spec|
       !spec.loaded_from.include?(path) or
         activated.include? spec.full_name or
-          entries.any? { |e| e.matches? spec }
+          entries.any? { |e| e.matches_spec? spec }
     }
 
     return if extra.empty?
