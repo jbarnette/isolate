@@ -1,3 +1,7 @@
+=== 1.10.1 / 2010-04-23
+
+* Fix cleanup, it wasn't.
+
 === 1.10.0 / 2010-03-15
 
 * Speculative now! shortcut.
