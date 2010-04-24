@@ -5,6 +5,7 @@ README.rdoc
 Rakefile
 lib/hoe/isolate.rb
 lib/isolate.rb
+lib/isolate/now.rb
 lib/isolate/rake.rb
 test/fixtures/isolate.rb
 test/fixtures/with-hoe/specifications/hoe-2.3.3.gemspec

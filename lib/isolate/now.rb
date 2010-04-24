@@ -1,0 +1,2 @@
+require "isolate"
+Isolate.now!
