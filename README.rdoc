@@ -20,10 +20,9 @@ Sinatra.
 
 Isolate is very, very, very stupid simple. For a much more
 full-featured Gem bundler, check out Yehuda Katz and Carl Lerche's
-Bundler[http://github.com/wycats/bundler]: It does a lot of fancy AOT
-dependency resolution, supports non-gem resources, and is probably a
-better fit for you. For a widely used Gem manager and installer, check
-out Chad Woolley's GemInstaller[http://geminstaller.rubyforge.org].
+Bundler[http://github.com/carlhuda/bundler]: It does a lot of fancy
+AOT dependency resolution, supports non-gem (including git) resources,
+and is probably a better fit for you.
 
 YMMV, but I haven't tried Isolate with anything older than RubyGems
 1.3.5.
