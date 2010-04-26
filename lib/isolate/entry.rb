@@ -60,12 +60,10 @@ module Isolate
     # Install this entry in the sandbox.
 
     def install
-      dir = Dir.pwd
       old = Gem.sources.dup
 
       begin
         cache = File.join @sandbox.path, "cache"
-        Dir.chdir cache if File.directory? cache
 
         installer = Gem::DependencyInstaller.new :development => false,
           :generate_rdoc => false, :generate_ri => false,
@@ -76,7 +74,6 @@ module Isolate
 
         installer.install @file || name, requirement
       ensure
-        Dir.chdir dir
         Gem.sources = old
         Gem::Command.build_args = nil
       end
