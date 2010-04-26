@@ -21,6 +21,13 @@ module Isolate
     ENV["ISOLATE_ENV"] || ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
   end
 
+  def self.gems path, options = {}, &block # :nodoc:
+    warn "Isolate.gems is deprecated, use Isolate.now! instead.\n" +
+         "Isolate.gems will be removed in v3.0."
+
+    now! options.merge(:path => path), &block
+  end
+
   @@sandbox = nil
 
   def self.sandbox
