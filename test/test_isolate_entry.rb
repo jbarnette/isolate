@@ -27,9 +27,12 @@ class TestIsolateEntry < Isolate::Test
   end
 
   def test_install_file
-    entry = e "test/fixtures/blort-0.0.gem"
+    file  = "test/fixtures/blort-0.0.gem"
+    entry = e file
     entry.install
-    assert File.file?("tmp/gems/specifications/blort-0.0.gemspec")
+
+    assert_equal File.expand_path(file),
+      Gem::DependencyInstaller.value.first.first
   end
 
   def test_matches?

@@ -43,7 +43,7 @@ module Isolate
       @requirement  = Gem::Requirement.default
       @sandbox      = sandbox
 
-      if File.file? @name
+      if /\.gem$/ =~ @name && File.file?(@name)
         @file = File.expand_path @name
 
         @name = File.basename(@file, ".gem").
