@@ -19,8 +19,6 @@ module Isolate
       @files        = []
       @options      = options
 
-      path options.fetch(:path, "tmp/isolate")
-
       file, local = nil
 
       unless FalseClass === options[:file]
@@ -37,6 +35,7 @@ module Isolate
       end
 
       load local if local && File.exist?(local)
+      path options.fetch(:path, "tmp/isolate")
     end
 
     # Activate this set of isolated entries, respecting an optional
