@@ -1,3 +1,31 @@
+=== 2.0.0.pre.0 / 2010-04-27
+
+* Remove cache thawing until I fix RubyGems.
+* Add deprecation warning for Isolate.gems.
+* Fix now! test to properly disable system gems.
+* Fix failing file installation test.
+* Move Isolate::Test to where it belongs.
+* Require Rake tasks automatically if Rake exists.
+* Make sure it's possible to install a local .gem file.
+* Make additive ENV changes idempotent. [Eric Wong]
+* Isolate is a module now, not a class.
+* Use tmp/isolate as the default, replacing tmp/gems.
+* Sanity updates to README, still needs lots of work.
+* Minimize public API on Isolate.
+* Add isolate:debug task, remove isolate:dotgems.
+* Separate isolated gem homes by ruby executable/version.
+* Allow options changes in Isolate files or blocks.
+* Extract instance bits of Isolate into Isolate::Sandbox.
+* Allow path to be set in blocks/files.
+* Add support for local override files.
+* Make the directory path when enabled, not in the ctor.
+* Clean up tests, provide a helper for default options.
+* Move installation inside Isolate::Entry.
+* Make entries additive. Multiple calls to Isolate#gem is fine.
+* Extract, refactor, and test Isolate::Entry.
+* Lock down required Ruby and RubyGems versions.
+* Move Isolate::Entry to its very own file.
+
 === 1.10.2 / 2010-04-24
 
 Add 'isolate/now' convenience require in prep. for 2.x.
