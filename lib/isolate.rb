@@ -28,6 +28,13 @@ module Isolate
     now! options.merge(:path => path), &block
   end
 
+  def self.instance
+    warn "Isolate.instance is deprecated, use Isolate.sandbox instead.\n" +
+         "Isolate.instance will be removed in v3.0."
+
+    sandbox
+  end
+
   @@sandbox = nil
 
   def self.sandbox
