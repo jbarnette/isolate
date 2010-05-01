@@ -1,6 +1,7 @@
 require "fileutils"
 require "isolate/entry"
 require "rbconfig"
+require "rubygems/defaults"
 require "rubygems/uninstaller"
 
 module Isolate
@@ -35,7 +36,6 @@ module Isolate
       end
 
       load local if local && File.exist?(local)
-      path options.fetch(:path, "tmp/isolate")
     end
 
     # Activate this set of isolated entries, respecting an optional
@@ -224,24 +224,21 @@ module Isolate
     def multiruby?
       @options.fetch :multiruby, true
     end
+
     def options options = nil
       @options.merge! options if options
       @options
     end
 
-    def path path = nil
-      if path
-        unless @options.key?(:multiruby) && @options[:multiruby] == false
-          suffix = RbConfig::CONFIG.
-            values_at("ruby_install_name", "ruby_version").join "-"
+    def path
+      base = @options.fetch :path, "tmp/isolate"
 
-          path = File.join(path, suffix) unless path =~ /#{suffix}/
-        end
-
-        @path = File.expand_path path
+      unless @options.key?(:multiruby) && @options[:multiruby] == false
+        suffix = "#{Gem.ruby_engine}-#{RbConfig::CONFIG['ruby_version']}"
+        base   = File.join(base, suffix) unless base =~ /#{suffix}/
       end
 
-      @path
+      File.expand_path base
     end
 
     def system?
