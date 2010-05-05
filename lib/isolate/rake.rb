@@ -46,7 +46,7 @@ namespace :isolate do
     exec args.command || ENV["SHELL"]
   end
 
-  desc "Which gems are stale?"
+  desc "Which isolated gems have updates available?"
   task :stale do
     require "rubygems/source_index"
     require "rubygems/spec_fetcher"
