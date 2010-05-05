@@ -1,11 +1,14 @@
 require "fileutils"
 require "isolate/entry"
+require "isolate/events"
 require "rbconfig"
 require "rubygems/defaults"
 require "rubygems/uninstaller"
 
 module Isolate
   class Sandbox
+    include Events
+
     attr_reader :entries # :nodoc:
     attr_reader :environments # :nodoc:
     attr_reader :files # :nodoc:
@@ -22,6 +25,8 @@ module Isolate
 
       file, local = nil
 
+      fire :initializing
+
       unless FalseClass === options[:file]
         file  = options[:file] || Dir["{Isolate,config/isolate.rb}"].first
         local = "#{file}.local" if file
@@ -36,6 +41,7 @@ module Isolate
       end
 
       load local if local && File.exist?(local)
+      fire :initialized
     end
 
     # Activate this set of isolated entries, respecting an optional
@@ -48,6 +54,7 @@ module Isolate
 
     def activate environment = nil
       enable unless enabled?
+      fire :activating
 
       env = (environment || Isolate.env).to_s
 
@@ -58,11 +65,14 @@ module Isolate
       end
 
       cleanup if cleanup?
+      fire :activated
 
       self
     end
 
     def cleanup # :nodoc:
+      fire :cleaning
+
       activated = Gem.loaded_specs.values.map { |s| s.full_name }
       available = Gem.source_index.gems.values.sort
 
@@ -74,22 +84,24 @@ module Isolate
         active or entry or system
       end
 
-      return if extra.empty?
+      unless extra.empty?
+        padding = Math.log10(extra.size).to_i + 1
+        format  = "[%0#{padding}d/%s] Nuking %s."
 
-      padding = Math.log10(extra.size).to_i + 1
-      format  = "[%0#{padding}d/%s] Nuking %s."
+        extra.each_with_index do |e, i|
+          log format % [i + 1, extra.size, e.full_name]
 
-      extra.each_with_index do |e, i|
-        log format % [i + 1, extra.size, e.full_name]
-
-        Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
-          Gem::Uninstaller.new(e.name,
-                               :version     => e.version,
-                               :ignore      => true,
-                               :executables => true,
-                               :install_dir => path).uninstall
+          Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
+            Gem::Uninstaller.new(e.name,
+                                 :version     => e.version,
+                                 :ignore      => true,
+                                 :executables => true,
+                                 :install_dir => path).uninstall
+          end
         end
       end
+
+      fire :cleaned
     end
 
     def cleanup?
@@ -98,6 +110,7 @@ module Isolate
 
     def disable &block
       return self if not enabled?
+      fire :disabling
 
       ENV["GEM_PATH"] = @old_gem_path
       ENV["GEM_HOME"] = @old_gem_home
@@ -109,6 +122,8 @@ module Isolate
       @enabled = false
 
       Isolate.refresh
+      fire :disabled
+
       begin; return yield ensure enable end if block_given?
 
       self
@@ -116,6 +131,7 @@ module Isolate
 
     def enable # :nodoc:
       return self if enabled?
+      fire :enabling
 
       @old_gem_path  = ENV["GEM_PATH"]
       @old_gem_home  = ENV["GEM_HOME"]
@@ -155,6 +171,7 @@ module Isolate
       Gem.path.unshift path if system?
 
       @enabled = true
+      fire :enabled
 
       self
     end
@@ -187,22 +204,26 @@ module Isolate
     end
 
     def install environment # :nodoc:
+      fire :installing
+
       installable = entries.select do |e|
         !Gem.available?(e.name, *e.requirement.as_list) &&
           e.matches?(environment)
       end
 
-      return self if installable.empty?
+      unless installable.empty?
+        padding = Math.log10(installable.size).to_i + 1
+        format  = "[%0#{padding}d/%s] Isolating %s (%s)."
 
-      padding = Math.log10(installable.size).to_i + 1
-      format  = "[%0#{padding}d/%s] Isolating %s (%s)."
+        installable.each_with_index do |entry, i|
+          log format % [i + 1, installable.size, entry.name, entry.requirement]
+          entry.install
+        end
 
-      installable.each_with_index do |entry, i|
-        log format % [i + 1, installable.size, entry.name, entry.requirement]
-        entry.install
+        Gem.source_index.refresh!
       end
 
-      Gem.source_index.refresh!
+      fire :installed
 
       self
     end

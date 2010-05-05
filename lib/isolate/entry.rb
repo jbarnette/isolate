@@ -1,3 +1,4 @@
+require "isolate/events"
 require "rubygems"
 require "rubygems/command"
 require "rubygems/dependency_installer"
@@ -10,6 +11,7 @@ module Isolate
   # installation options. Internal use only.
 
   class Entry
+    include Events
 
     # Which environments does this entry care about? Generally an
     # Array of Strings. An empty array means "all", not "none".
@@ -54,7 +56,9 @@ module Isolate
     end
 
     def activate
-      Gem.activate name, *requirement.as_list
+      fire :activating, :activated do
+        Gem.activate name, *requirement.as_list
+      end
     end
 
     # Install this entry in the sandbox.
@@ -63,16 +67,16 @@ module Isolate
       old = Gem.sources.dup
 
       begin
-        cache = File.join @sandbox.path, "cache"
+        fire :installing, :installed do
+          installer = Gem::DependencyInstaller.new :development => false,
+            :generate_rdoc => false, :generate_ri => false,
+            :install_dir => @sandbox.path
 
-        installer = Gem::DependencyInstaller.new :development => false,
-          :generate_rdoc => false, :generate_ri => false,
-          :install_dir => @sandbox.path
+          Gem.sources += Array(options[:source]) if options[:source]
+          Gem::Command.build_args = Array(options[:args]) if options[:args]
 
-        Gem.sources += Array(options[:source]) if options[:source]
-        Gem::Command.build_args = Array(options[:args]) if options[:args]
-
-        installer.install @file || name, requirement
+          installer.install @file || name, requirement
+        end
       ensure
         Gem.sources = old
         Gem::Command.build_args = nil
@@ -97,9 +101,11 @@ module Isolate
     # replaced.
 
     def update *reqs
-      @environments |= @sandbox.environments
-      @options.merge! reqs.pop if Hash === reqs.last
-      @requirement = Gem::Requirement.new reqs unless reqs.empty?
+      fire :updating, :updated do
+        @environments |= @sandbox.environments
+        @options.merge! reqs.pop if Hash === reqs.last
+        @requirement = Gem::Requirement.new reqs unless reqs.empty?
+      end
 
       self
     end
