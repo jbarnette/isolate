@@ -114,6 +114,7 @@ module Isolate
 
       ENV["GEM_PATH"] = @old_gem_path
       ENV["GEM_HOME"] = @old_gem_home
+      ENV["ISOLATED"] = @old_isolated
       ENV["PATH"]     = @old_path
       ENV["RUBYOPT"]  = @old_ruby_opt
 
@@ -135,6 +136,7 @@ module Isolate
 
       @old_gem_path  = ENV["GEM_PATH"]
       @old_gem_home  = ENV["GEM_HOME"]
+      @old_isolated  = ENV["ISOLATED"]
       @old_path      = ENV["PATH"]
       @old_ruby_opt  = ENV["RUBYOPT"]
       @old_load_path = $LOAD_PATH.dup
@@ -166,6 +168,8 @@ module Isolate
       unless ENV["PATH"].split(File::PATH_SEPARATOR).include? bin
         ENV["PATH"] = [bin, ENV["PATH"]].join File::PATH_SEPARATOR
       end
+
+      ENV["ISOLATED"] = path
 
       Isolate.refresh
       Gem.path.unshift path if system?
