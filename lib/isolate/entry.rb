@@ -96,6 +96,10 @@ module Isolate
       name == spec.name and requirement.satisfied_by? spec.version
     end
 
+    def specification
+      Gem.source_index.find_name(name, requirement).first
+    end
+
     # Updates this entry's environments, options, and
     # requirement. Environments and options are merged, requirement is
     # replaced.

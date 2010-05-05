@@ -1,6 +1,6 @@
 namespace :isolate do
   desc "Show current isolated environment."
-  task :debug do
+  task :env do
     require "pathname"
 
     sandbox = Isolate.sandbox
@@ -9,10 +9,10 @@ namespace :isolate do
     files   = sandbox.files.map { |f| Pathname(f) }
 
     puts
-    puts "  sandbox: #{path}"
+    puts "     path: #{path}"
     puts "      env: #{Isolate.env}"
 
-    files.collect! { |f| f.absolute? ? f.relative_path_from(here) : f }
+    files.map! { |f| f.absolute? ? f.relative_path_from(here) : f }
     puts "    files: #{files.join ', '}"
     puts
 
@@ -44,5 +44,27 @@ namespace :isolate do
   desc "Run an isolated command or subshell."
   task :sh, [:command] do |t, args|
     exec args.command || ENV["SHELL"]
+  end
+
+  desc "Which gems are stale?"
+  task :stale do
+    require "rubygems/source_index"
+    require "rubygems/spec_fetcher"
+
+    index = Gem::SourceIndex.new
+    index.add_specs *Isolate.sandbox.entries.map { |e| e.specification }
+
+    outdated = index.outdated.map do |n|
+      Isolate.sandbox.entries.find { |e| e.name == n }
+    end
+
+    outdated.sort_by { |e| e.name }.each do |entry|
+      local   = entry.specification.version
+      dep     = Gem::Dependency.new entry.name, ">= #{local}"
+      remotes = Gem::SpecFetcher.fetcher.fetch dep
+      remote  = remotes.last.first.version
+
+      puts "#{entry.name} (#{local} < #{remote})"
+    end
   end
 end

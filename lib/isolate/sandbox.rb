@@ -78,7 +78,7 @@ module Isolate
 
       extra = available.reject do |spec|
         active = activated.include? spec.full_name
-        entry  = entries.detect { |e| e.matches_spec? spec }
+        entry  = entries.find { |e| e.matches_spec? spec }
         system = !spec.loaded_from.include?(path)
 
         active or entry or system
@@ -196,7 +196,7 @@ module Isolate
     # later.
 
     def gem name, *requirements
-      entry = entries.detect { |e| e.name == name }
+      entry = entries.find { |e| e.name == name }
       return entry.update(*requirements) if entry
 
       entries << entry = Entry.new(self, name, *requirements)
