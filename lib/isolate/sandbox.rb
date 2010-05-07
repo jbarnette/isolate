@@ -195,6 +195,8 @@ module Isolate
       @environments = old
     end
 
+    alias_method :env, :environment
+
     # Express a gem dependency. Works pretty much like RubyGems' +gem+
     # method, but respects +environment+ and doesn't activate 'til
     # later.
