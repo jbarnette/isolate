@@ -5,18 +5,13 @@
 == Description
 
 Isolate is a very simple RubyGems sandbox. It provides a way to
-express and install your code's Gem dependencies.
+express and automatically install your project's Gem dependencies.
 
-== How?
+== Wha?
 
 When Isolate runs, it uses GEM_HOME, GEM_PATH, and a few other tricks
-to completely separate your code from the system's RubyGems
-configuration, leaving it free to run in blissful solitude.
-
-While Isolate doesn't make any assumptions about what sort of code
-you're writing, it was extracted from a few Rails apps, so it's
-naturally going to be most useful with stuff like Rails, Merb, or
-Sinatra.
+to separate your code from the system's RubyGems configuration,
+leaving it free to run in blissful solitude.
 
 Isolate is very, very, very stupid simple. For a much more
 full-featured Gem bundler, check out Yehuda Katz and Carl Lerche's
@@ -24,180 +19,63 @@ Bundler[http://github.com/carlhuda/bundler]: It does a lot of fancy
 AOT dependency resolution, supports non-gem (including git) resources,
 and is probably a better fit for you.
 
-YMMV, but I haven't tried Isolate with anything older than RubyGems
-1.3.5.
+== Requirements
 
-== Examples
+RubyGems 1.3.6 or better, Ruby 1.8.7 or better.
 
-=== Defining Your Isolated Environment
+== Getting Started
 
-It's pretty easy: <tt>gem</tt> is similar to RubyGems' method of the
-same name. Version specifiers are optional.
+=== Rails 2
 
-    require "rubygems"
-    require "isolate"
-
-    Isolate.now! do
-      gem "johnson", "~> 1.1" # or maybe...
-      gem "jbarnette-johnson"
-    end
-
-At the end of the <tt>Isolate.now!</tt> block, you're completely
-isolated. <tt>GEM_PATH</tt> and <tt>GEM_HOME</tt> are set, and all
-your specified gems have been activated.
-
-If you need access to the original un-isolated environment for any
-reason, you can temporarily disable Isolate:
-
-    Isolate.disable { `heroku config` }
-
-I occasionally use this to call out to gems or tools that don't belong
-in my project.
-
-=== Conditionals
-
-Sometimes different sets of gems are appropriate at different
-times. Isolate allows you to restrict gems by 'environment' (which is
-really just a string passed in when things are activated).
-
-    Isolate.now! do
-      gem "intercession"
-
-      environment :test, :cucumber do
-        gem "mocha"
-      end
-    end
-
-Unsurprisingly, the <tt>mocha</tt> gem will only be activated in the
-<tt>test</tt> and <tt>cucumber</tt> environments. See the Rails
-example below for an example of how to use <tt>RAILS_ENV</tt> to set
-your environment.
-
-=== Options
-
-Any trailing hash args to <tt>gem</tt> are attached to Isolate's gem
-entry as options. There are two well-known keys, <tt>:source</tt>
-and <tt>:args</tt>.
-
-    # explicitly specify gem source
-    gem "jbarnette-johnson", :source => "http://gems.github.com"
-
-    # pass gem install args (the part after the '--')
-    gem "agem", :args => "--no-blah"
-
-=== An External File
-
-It's nice to play use <tt>Isolate.now!</tt> inline, but it's better to
-keep all your stuff in an external file. This is supported by default:
-
-    Isolate.now!
-
-This will look for `Isolate` and `config/isolate.rb` files relative to
-the current directory, and `instance_eval` the first one it finds. If
-there's another matching file with a `.local` extension, Isolate will
-grab that one too. This makes it easy to have additional config that's
-specific to a deployment or developer.
-
-=== Installing Isolated Gems
-
-By default, Isolate will install and clean up your gems
-automatically. You can pass the <tt>:cleanup</tt>, <tt>:install</tt>,
-and <tt>:verbose</tt> options to control things:
-
-    # don't remove unnecesary gems
-    Isolate.now!, :cleanup => false
-
-    # install, but quietly
-    Isolate.now! :verbose => false
-
-    # don't install
-    Isolate.now! :install => false
-
-All of these options can be set inside your `Isolate` file, too:
-
-    options :cleanup => false, :verbose => false
-
-=== Interaction and Rake
-
-You don't strictly need them, but Isolate provides a set of Rake tasks
-that make a few common thing easier. To use them, just drop a
-<tt>require</tt> in your <tt>Rakefile</tt>:
-
-    require "isolate/rake"
-
-==== Running Shell Commands
-
-When you're in an isolated subshell, the command-line tools provided
-by any of your gems are available on your PATH.
-
-    # run a single command in an isolated subshell
-    $ rake isolate:sh['gem list']
-
-    # run a new isolated subshell
-    $ rake isolate:sh
-
-==== What's up?
-
-    $ rake isolate:debug
-
-=== A Rails 2 Example
-
-Here's a quick example (extracted from a real project) of how to use
-Isolate with Rails. This project doesn't use vendored Rails, and
-doesn't want to depend on any system gems (except isolate, of course).
-
-Let's edit <tt>config/preinitializer.rb</tt>:
+In <tt>config/preinitializer.rb</tt>:
 
     require "rubygems"
-    require "isolate"
+    require "isolate/now"
 
-    Isolate.now!
+In <tt>Isolate</tt>:
 
-In <tt>config/isolate.rb</tt>:
+    gem "rails", "2.3.5"
+    gem "aasm",  "2.0.0"
 
-    gem "rails", "= 2.2.2"
-
-    # async emails!
-    gem "ar_mailer", "~> 1.3", '>= 1.3.3'
-
-    # Facebook integration
-    gem "facebooker", ">= 1.0.31"
-
-    # Google contacts integration
-    gem "gmail_contacts", "~> 1.7"
-
-    # View templates
-    gem "haml", "~> 2.0"
-
-    # Session as model
-    gem "intercession", "~> 1.0"
-
-    # XML/HTML parsing in Facebooker and tests
-    gem "nokogiri", ">= 1.2.3"
-
-    # Twitter authentication
-    gem "oauth", "~> 0.3"
-
-    environment :cucumber, :development, :test do
-      gem "cucumber"     # stories!
-      gem "modelizer"    # easy model factories
-      gem "sqlite3-ruby" # database support
-      gem "vlad"         # deployment
-      gem "webrat"       # integration tests
+    env :development, :test do
+      gem "sqlite3-ruby", "1.2.5"
     end
 
-You could specify all this inside the <tt>Isolate.now!</tt> block, of
-course, but keeping everything in an external file is nicer.
+    env :production do
+      gem "memcached", "0.19.2"
+    end
 
-Since this is loaded in the preinitializer, Isolate will install and
-activate the all gems before Rails loads. The current environment is
-determined by looking at the <tt>ISOLATE_ENV</tt>, <tt>RAILS_ENV</tt>,
-or <tt>RACK_ENV</tt> environment variable. If none are set,
-<tt>"development"</tt> is the default.
+Try running <tt>rake environment</tt>. Before anything else happens,
+Isolate will make sure you have copies of every gem you need (extend
+the example above to cover all your dependencies). If they're already
+installed on your system Isolate will use them, otherwise a private
+copy will be installed under <tt>tmp/isolate</tt>.
 
-Pow. Isolated!
+=== Rails 3
 
-=== A Library Example
+In <tt>config/boot.rb</tt>:
+
+    require "rubygems"
+    require "isolate/now"
+
+Construct your <tt>Isolate</tt> file as above. Be sure to remove any
+references to <tt>Bundler.setup</tt> and <tt>Bundler.require</tt> from
+<tt>config/boot.rb</tt> and <tt>config/application.rb</tt>.
+
+=== Sinatra, Rack, and Anything Else
+
+There's nothing special about Rails, it's just an easy first
+example. You can use Isolate with any library or framework by simply
+putting an <tt>Isolate</tt> file in the root of your project and
+requiring <tt>isolate/now</tt> as early as possible in the startup
+process.
+
+When you're starting up, Isolate tries to determine its environment by
+looking at the <tt>ISOLATE_ENV</tt>, <tt>RACK_ENV</tt>, and
+<tt>RAILS_ENV</tt> env vars. If none are set, it defaults to
+<tt>development</tt>.
+
+=== Library Development
 
 If you're using Hoe[http://blog.zenspider.com/hoe] to manage your
 library, you can use Isolate's Hoe plugin to automatically install
@@ -212,16 +90,83 @@ as putting:
 
 before the <tt>Hoe.spec</tt> call in your <tt>Rakefile</tt>.
 
-If you're not using Hoe, you can just do a regular
-<tt>Isolate.now!</tt> block at the top of your Rakefile.
+If you're not using Hoe, you can use an <tt>Isolate.now!</tt> block at
+the top of your Rakefile. See the RDoc for details.
+
+== Rake
+
+Isolate provides a few useful Rake tasks.
+
+=== isolate:env
+
+This task shows you the current Isolate settings and gems.
+
+    $ rake isolate:env
+
+         path: tmp/isolate/ruby-1.8
+          env: development
+        files: Isolate
+
+      cleanup? true
+      enabled? true
+      install? true
+    multiruby? true
+       system? true
+      verbose? true
+
+    [all environments]
+    gem rails, = 2.3.5
+    gem aasm, = 2.0.0
+
+    [development, test]
+    gem sqlite3-ruby, = 1.2.5
+
+    [production]
+    gem memcached, = 0.19.2
+
+=== isolate:sh
+
+This task allows you to run a subshell or a command in the isolated
+environment, making any command-line tools available on your
+<tt>PATH</tt>.
+
+    # run a single command in an isolated subshell
+    $ rake isolate:sh['gem list']
+
+    # run a new isolated subshell
+    $ rake isolate:sh
+
+=== isolate:stale
+
+This task lists gems that have a more recent released version than the
+one you're using.
+
+    $ rake isolate:stale
+    aasm (2.0.0 < 2.1.5)
+
+== Further Reading
+
+<tt>require "isolate/now"</tt> is sugar for <tt>Isolate.now!</tt>,
+which creates, configures, and activates a singleton version of
+Isolate's sandbox. <tt>Isolate.now!</tt> takes a few useful options,
+and lets you define an entire environment inline without using an
+external file.
+
+For detailed information on <tt>Isolate.now!</tt> and the rest of the
+public API, please see the RDoc.
 
 == Installation
 
     $ gem install isolate
 
+== Meta
+
+Bugs::  http://github.com/jbarnette/isolate/issues
+Email:: isolate@librelist.com
+
 == License
 
-Copyright 2009 John Barnette, et al. (jbarnette@rubyforge.org)
+Copyright 2009-2010 John Barnette, et al. (code@jbarnette.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
