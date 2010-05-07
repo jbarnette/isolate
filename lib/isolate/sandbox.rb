@@ -6,6 +6,10 @@ require "rubygems/defaults"
 require "rubygems/uninstaller"
 
 module Isolate
+
+  # An isolated environment. This class exposes lifecycle events for
+  # extension, see Isolate::Events for more information.
+
   class Sandbox
     include Events
 
@@ -13,8 +17,10 @@ module Isolate
     attr_reader :environments # :nodoc:
     attr_reader :files # :nodoc:
 
-    # Create a new Isolate instance. See Isolate.gems for the public
-    # API. You probably don't want to use this constructor directly.
+    # Create a new Isolate::Sandbox instance. See Isolate.now! for the
+    # most common use of the API. You probably don't want to use this
+    # constructor directly.  Fires <tt>:initializing</tt> and
+    # <tt>:initialized</tt>.
 
     def initialize options = {}, &block
       @enabled      = false
@@ -50,7 +56,8 @@ module Isolate
     # everything, and removes any superfluous gem (again, if
     # necessary). If +environment+ isn't specified, +ISOLATE_ENV+,
     # +RAILS_ENV+, and +RACK_ENV+ are checked before falling back to
-    # <tt>"development"</tt>.
+    # <tt>"development"</tt>. Fires <tt>:activating</tt> and
+    # <tt>:activated</tt>.
 
     def activate environment = nil
       enable unless enabled?

@@ -8,7 +8,9 @@ require "rubygems/version"
 module Isolate
 
   # An isolated Gem, with requirement, environment restrictions, and
-  # installation options. Internal use only.
+  # installation options. Generally intended for internal use. This
+  # class exposes lifecycle events for extension, see Isolate::Events
+  # for more information.
 
   class Entry
     include Events
@@ -33,9 +35,14 @@ module Isolate
     attr_reader :requirement
 
     # Create a new entry. Takes +sandbox+ (currently an instance of
-    # Isolate), +name+ (as above), and any number of optional version
-    # requirements (generally Strings). Options can be passed as a
-    # trailing hash. FIX: document well-known keys.
+    # Isolate::Sandbox), +name+ (as above), and any number of optional
+    # version requirements (generally strings). Options can be passed
+    # as a trailing hash. Well-known keys:
+    #
+    # :args:: Command-line build arguments. Passed to the gem at
+    #         installation time.
+    #
+    # :source:: An alternative RubyGems source for this gem.
 
     def initialize sandbox, name, *requirements
       @environments = []
@@ -55,13 +62,17 @@ module Isolate
       update(*requirements)
     end
 
+    # Activate this entry. Fires <tt>:activating</tt> and
+    # <tt>:activated</tt>.
+
     def activate
       fire :activating, :activated do
         Gem.activate name, *requirement.as_list
       end
     end
 
-    # Install this entry in the sandbox.
+    # Install this entry in the sandbox. Fires <tt>:installing</tt>
+    # and <tt>:installed</tt>.
 
     def install
       old = Gem.sources.dup
@@ -96,13 +107,15 @@ module Isolate
       name == spec.name and requirement.satisfied_by? spec.version
     end
 
+    # The Gem::Specification for this entry.
+
     def specification
       Gem.source_index.find_name(name, requirement).first
     end
 
     # Updates this entry's environments, options, and
     # requirement. Environments and options are merged, requirement is
-    # replaced.
+    # replaced. Fires <tt>:updating</tt> and <tt>:updated</tt>.
 
     def update *reqs
       fire :updating, :updated do
