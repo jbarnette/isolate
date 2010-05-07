@@ -5,7 +5,6 @@ README.rdoc
 Rakefile
 lib/hoe/isolate.rb
 lib/isolate.rb
-lib/isolate/now.rb
 lib/isolate/entry.rb
 lib/isolate/events.rb
 lib/isolate/now.rb
