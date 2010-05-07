@@ -18,24 +18,40 @@ class Hoe # :nodoc:
 
   module Isolate
 
-    # Where should Isolate, um, isolate? [default: <tt>"tmp/gems"</tt>]
+    # Where should Isolate, um, isolate? [default: <tt>"tmp/isolate"</tt>]
+    # FIX: consider removing this and allowing +isolate_options+ instead.
 
     attr_accessor :isolate_dir
 
-    def initialize_isolate # :nodoc:
+    def initialize_isolate
       # Tee hee! Move ourselves to the front to beat out :test.
       Hoe.plugins.unshift Hoe.plugins.delete(:isolate)
-      self.isolate_dir ||= "tmp/gems"
+
+      self.isolate_dir ||= "tmp/isolate"
+      @sandbox = ::Isolate::Sandbox.new
+
+      @sandbox.entries.each do |entry|
+        dep = [entry.name, *entry.requirement.as_list]
+
+        if entry.environments.include? "development"
+          extra_dev_deps << dep
+        elsif entry.environments.empty?
+          extra_deps << dep
+        end
+      end
     end
 
     def define_isolate_tasks # HACK
-      i = ::Isolate.new self.isolate_dir, :cleanup => true
 
+      # reset, now that they've had a chance to change it
+      @sandbox.options :path => isolate_dir
+
+      # allows traditional extra{_dev}_deps calls to override
       (self.extra_deps + self.extra_dev_deps).each do |name, version|
-        i.gem name, *Array(version)
+        @sandbox.gem name, *Array(version)
       end
 
-      i.activate
+      @sandbox.activate
     end
   end
 end
