@@ -1,3 +1,12 @@
+=== 2.0.0.pre.2 / 2010-05-07
+
+* Update docs.
+* Add event hooks for better extension/integration.
+* Add ISOLATED env var when Isolate is activated.
+* Teach the Hoe plugin to recognize Isolate files.
+* Add `env` as an alias for `environment`.
+* Clean up Rake tasks.
+
 === 2.0.0.pre.1 / 2010-05-02
 
 * Don't provide a special way to set path, options is enough.
