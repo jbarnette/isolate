@@ -161,8 +161,10 @@ public API, please see the RDoc.
 
 == Meta
 
-Bugs::  http://github.com/jbarnette/isolate/issues
-Email:: isolate@librelist.com
+RDoc::         http://rdoc.info/projects/jbarnette/isolate
+Bugs::         http://github.com/jbarnette/isolate/issues
+IRC::          #isolate on Freenode
+Mailing List:: isolate@librelist.com
 
 == License
 
