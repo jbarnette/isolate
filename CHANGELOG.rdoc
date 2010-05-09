@@ -1,3 +1,10 @@
+=== 2.0.0.pre.3 / 2010-05-09
+
+* Refactor cleanup. Fixes issue #24.
+* Fix Isolate::Events doco.
+* Clarify Rake task doco.
+* Update useful resources.
+
 === 2.0.0.pre.2 / 2010-05-07
 
 * Update docs.
