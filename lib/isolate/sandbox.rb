@@ -80,16 +80,9 @@ module Isolate
     def cleanup # :nodoc:
       fire :cleaning
 
-      activated = Gem.loaded_specs.values.map { |s| s.full_name }
-      available = Gem.source_index.gems.values.sort
-
-      extra = available.reject do |spec|
-        active = activated.include? spec.full_name
-        entry  = entries.find { |e| e.matches_spec? spec }
-        system = !spec.loaded_from.include?(path)
-
-        active or entry or system
-      end
+      installed = index.gems.values.sort
+      legit     = legitimize!
+      extra     = installed - legit
 
       unless extra.empty?
         padding = Math.log10(extra.size).to_i + 1
@@ -216,6 +209,12 @@ module Isolate
       entry
     end
 
+    # A source index representing only isolated gems.
+
+    def index
+      @index ||= Gem::SourceIndex.from_gems_in File.join(path, "specifications")
+    end
+
     def install environment # :nodoc:
       fire :installing
 
@@ -233,6 +232,7 @@ module Isolate
           entry.install
         end
 
+        index.refresh!
         Gem.source_index.refresh!
       end
 
@@ -281,6 +281,28 @@ module Isolate
 
     def verbose?
       @options.fetch :verbose, true
+    end
+
+    private
+
+    # Returns a list of Gem::Specification instances that 1. exist in
+    # the isolated gem path, and 2. are allowed to be there. Used in
+    # cleanup. It's only an external method 'cause recursion is
+    # easier.
+
+    def legitimize! deps = entries
+      [].tap do |specs|
+        deps.flatten.each do |dep|
+          spec = index.find_name(dep.name, dep.requirement).last
+
+          if spec
+            specs.concat legitimize!(spec.runtime_dependencies)
+            specs << spec
+          end
+        end
+
+        specs.uniq!
+      end
     end
   end
 end
