@@ -2,9 +2,9 @@ module Isolate
 
   # A simple way to watch and extend the Isolate lifecycle.
   #
-  # Isolate::Events.watch Isolate::Sandbox, :initialized do |sandbox|
-  #   puts "A sandbox just got initialized: #{sandbox}"
-  # end
+  #    Isolate::Events.watch Isolate::Sandbox, :initialized do |sandbox|
+  #      puts "A sandbox just got initialized: #{sandbox}"
+  #    end
   #
   # Read the source for Isolate::Sandbox and Isolate::Entry to see
   # what sort of events are fired.
