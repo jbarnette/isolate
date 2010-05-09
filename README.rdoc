@@ -95,7 +95,9 @@ the top of your Rakefile. See the RDoc for details.
 
 == Rake
 
-Isolate provides a few useful Rake tasks.
+Isolate provides a few useful Rake tasks. If you're requiring
+<tt>isolate/now</tt>, you'll get them automatically when you run
+Rake. If not, you can include them by requiring <tt>isolate/rake</tt>.
 
 === isolate:env
 
