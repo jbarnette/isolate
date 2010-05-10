@@ -157,6 +157,21 @@ external file.
 For detailed information on <tt>Isolate.now!</tt> and the rest of the
 public API, please see the RDoc.
 
+== Not Gonna Happen
+
+* Dependency resolution. If this ever becomes a serious problem for
+  us, we'll likely push hard to solve it in RubyGems proper. If you
+  run into these sorts of problems a lot, use Bundler. Or less
+  libraries.
+
+* Autorequire. Unlike <tt>config.gems</tt> or other solutions, Isolate
+  expects you to be a good little Rubyist and manually
+  <tt>require</tt> the libraries you use.
+
+* Support for Git or other SCMs. You're welcome to write an extension
+  that supports 'em, but Isolate itself is focused on packaged,
+  released gems.
+
 == Installation
 
     $ gem install isolate
