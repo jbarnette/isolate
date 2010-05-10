@@ -4,7 +4,7 @@ require "hoe"
 Hoe.plugin :doofus, :git
 
 Hoe.spec "isolate" do
-  developer "John Barnette", "jbarnette@rubyforge.org"
+  developer "John Barnette", "code@jbarnette.com"
   developer "Ryan Davis",    "ryand-ruby@zenspider.com"
 
   require_ruby_version     ">= 1.8.7"
