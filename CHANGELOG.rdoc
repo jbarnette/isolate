@@ -1,52 +1,21 @@
-=== 2.0.0.pre.3 / 2010-05-09
+=== 2.0.0 / 2010-05-10
 
-* Refactor cleanup. Fixes issue #24.
-* Fix Isolate::Events doco.
-* Clarify Rake task doco.
-* Update useful resources.
-
-=== 2.0.0.pre.2 / 2010-05-07
-
-* Update docs.
-* Add event hooks for better extension/integration.
+* Rewrite README and RDoc.
+* Deprecate `Isolate.gems` and `Isolate.instance`.
+* Add Isolate::Event hooks for better extension/integration.
 * Add ISOLATED env var when Isolate is activated.
 * Teach the Hoe plugin to recognize Isolate files.
 * Add `env` as an alias for `environment`.
-* Clean up Rake tasks.
-
-=== 2.0.0.pre.1 / 2010-05-02
-
-* Don't provide a special way to set path, options is enough.
-* Deprecate and warn for Isolate.instance.
-* Allow :multiruby option to be overridden in .local files.
-
-=== 2.0.0.pre.0 / 2010-04-27
-
-* Remove cache thawing until I fix RubyGems.
-* Add deprecation warning for Isolate.gems.
-* Fix now! test to properly disable system gems.
-* Fix failing file installation test.
-* Move Isolate::Test to where it belongs.
-* Require Rake tasks automatically if Rake exists.
+* Significantly refactor API and internals.
+* Add .local files for overriding global and gem args and options.
+* Segregate isolated gems by Ruby engine and version.
 * Make sure it's possible to install a local .gem file.
 * Make additive ENV changes idempotent. [Eric Wong]
 * Isolate is a module now, not a class.
 * Use tmp/isolate as the default, replacing tmp/gems.
-* Sanity updates to README, still needs lots of work.
-* Minimize public API on Isolate.
-* Add isolate:debug task, remove isolate:dotgems.
-* Separate isolated gem homes by ruby executable/version.
 * Allow options changes in Isolate files or blocks.
-* Extract instance bits of Isolate into Isolate::Sandbox.
-* Allow path to be set in blocks/files.
-* Add support for local override files.
-* Make the directory path when enabled, not in the ctor.
-* Clean up tests, provide a helper for default options.
-* Move installation inside Isolate::Entry.
 * Make entries additive. Multiple calls to Isolate#gem is fine.
-* Extract, refactor, and test Isolate::Entry.
-* Lock down required Ruby and RubyGems versions.
-* Move Isolate::Entry to its very own file.
+* Lock down required Ruby and RubyGems versions (1.8.7+, 1.3.6+).
 
 === 1.10.2 / 2010-04-24
 
