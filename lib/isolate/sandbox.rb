@@ -112,12 +112,7 @@ module Isolate
       return self if not enabled?
       fire :disabling
 
-      ENV["GEM_PATH"] = @old_gem_path
-      ENV["GEM_HOME"] = @old_gem_home
-      ENV["ISOLATED"] = @old_isolated
-      ENV["PATH"]     = @old_path
-      ENV["RUBYOPT"]  = @old_ruby_opt
-
+      ENV.replace @old_env
       $LOAD_PATH.replace @old_load_path
 
       @enabled = false
@@ -134,11 +129,7 @@ module Isolate
       return self if enabled?
       fire :enabling
 
-      @old_gem_path  = ENV["GEM_PATH"]
-      @old_gem_home  = ENV["GEM_HOME"]
-      @old_isolated  = ENV["ISOLATED"]
-      @old_path      = ENV["PATH"]
-      @old_ruby_opt  = ENV["RUBYOPT"]
+      @old_env       = ENV.to_hash
       @old_load_path = $LOAD_PATH.dup
 
       FileUtils.mkdir_p path
