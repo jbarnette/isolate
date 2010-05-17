@@ -49,9 +49,9 @@ class TestIsolateEntry < Isolate::Test
   def test_matches_spec?
     entry = e "hi", "1.1"
 
-    assert entry.matches_spec?(spec "hi", "1.1")
-    assert !entry.matches_spec?(spec "bye", "1.1")
-    assert !entry.matches_spec?(spec "hi", "1.2")
+    assert entry.matches_spec?(spec("hi", "1.1"))
+    assert !entry.matches_spec?(spec("bye", "1.1"))
+    assert !entry.matches_spec?(spec("hi", "1.2"))
   end
 
   def test_update

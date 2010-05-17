@@ -282,18 +282,18 @@ module Isolate
     # easier.
 
     def legitimize! deps = entries
-      [].tap do |specs|
-        deps.flatten.each do |dep|
-          spec = index.find_name(dep.name, dep.requirement).last
+      specs = []
 
-          if spec
-            specs.concat legitimize!(spec.runtime_dependencies)
-            specs << spec
-          end
+      deps.flatten.each do |dep|
+        spec = index.find_name(dep.name, dep.requirement).last
+
+        if spec
+          specs.concat legitimize!(spec.runtime_dependencies)
+          specs << spec
         end
-
-        specs.uniq!
       end
+
+      specs.uniq
     end
   end
 end

@@ -7,7 +7,7 @@ Hoe.spec "isolate" do
   developer "John Barnette", "code@jbarnette.com"
   developer "Ryan Davis",    "ryand-ruby@zenspider.com"
 
-  require_ruby_version     ">= 1.8.7"
+  require_ruby_version     ">= 1.8.6"
   require_rubygems_version ">= 1.3.6"
 
   self.extra_rdoc_files = Dir["*.rdoc"]
