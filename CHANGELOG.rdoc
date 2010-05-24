@@ -1,3 +1,8 @@
+=== 2.0.1 / 2010-05-24
+
+* Fine, fine. Re-enables support for Ruby 1.8.6.
+* Make deprecated Isolate.gems more compatible with 1.x. [Eric Wong]
+
 === 2.0.0 / 2010-05-10
 
 * Rewrite README and RDoc.
