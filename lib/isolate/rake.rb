@@ -51,15 +51,23 @@ namespace :isolate do
     require "rubygems/source_index"
     require "rubygems/spec_fetcher"
 
-    index = Gem::SourceIndex.new
-    index.add_specs *Isolate.sandbox.entries.map { |e| e.specification }
+    index    = Gem::SourceIndex.new
+    outdated = []
 
-    outdated = index.outdated.map do |n|
-      Isolate.sandbox.entries.find { |e| e.name == n }
+    Isolate.sandbox.entries.each do |entry|
+      if entry.specification
+        index.add_spec entry.specification
+      else
+        outdated << entry
+      end
+    end
+
+    index.outdated.each do |name|
+      outdated << Isolate.sandbox.entries.find { |e| e.name == name }
     end
 
     outdated.sort_by { |e| e.name }.each do |entry|
-      local   = entry.specification.version
+      local   = entry.specification ? entry.specification.version : "0"
       dep     = Gem::Dependency.new entry.name, ">= #{local}"
       remotes = Gem::SpecFetcher.fetcher.fetch dep
       remote  = remotes.last.first.version
