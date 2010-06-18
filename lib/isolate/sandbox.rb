@@ -267,7 +267,7 @@ module Isolate
     end
 
     def system?
-      @options.fetch :system, true
+      @options.fetch :system, false
     end
 
     def verbose?
