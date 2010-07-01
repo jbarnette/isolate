@@ -29,9 +29,12 @@ module Isolate
       @files        = []
       @options      = options
 
-      file, local = nil
-
       fire :initializing
+
+      user = File.expand_path "~/.isolate/user.rb"
+      load user if File.exist? user
+
+      file, local = nil
 
       unless FalseClass === options[:file]
         file  = options[:file] || Dir["{Isolate,config/isolate.rb}"].first
