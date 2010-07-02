@@ -31,7 +31,7 @@ module Isolate
     end
 
     def fire name, after = nil, *args, &block #:nodoc:
-      Isolate::Events.fire self.class, name, *args
+      Isolate::Events.fire self.class, name, self, *args
 
       if after && block_given?
         yield self
