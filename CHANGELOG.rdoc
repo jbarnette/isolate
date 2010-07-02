@@ -1,3 +1,8 @@
+=== 2.1.0 / 2010-07-01
+
+* Pass self to event hooks. Speculative coding FTL.
+* Load ~/.isolate/user.rb if it exists.
+
 === 2.0.2 / 2010-05-25
 
 * Provide reasonable stale output for missing deps.
