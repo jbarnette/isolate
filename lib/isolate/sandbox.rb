@@ -138,20 +138,21 @@ module Isolate
       FileUtils.mkdir_p path
       ENV["GEM_HOME"] = path
 
+      lib = File.expand_path "../..", __FILE__
+
       unless system?
         $LOAD_PATH.reject! do |p|
-          p != File.dirname(__FILE__) &&
-            Gem.path.any? { |gp| p.include?(gp) }
+          p != lib && Gem.path.any? { |gp| p.include?(gp) }
         end
 
         # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
         # subshells, and the only way I can think of to do that is by
         # abusing RUBYOPT.
 
-        dirname = Regexp.escape File.dirname(__FILE__)
+        dirname = Regexp.escape lib
 
-        unless ENV["RUBYOPT"] =~ /\s+-I\s*#{dirname}\b/
-          ENV["RUBYOPT"] = "#{ENV['RUBYOPT']} -I#{File.dirname(__FILE__)}"
+        unless ENV["RUBYOPT"] =~ /\s+-I\s*#{lib}\b/
+          ENV["RUBYOPT"] = "#{ENV['RUBYOPT']} -I#{lib}"
         end
 
         ENV["GEM_PATH"] = path
