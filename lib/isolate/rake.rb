@@ -43,7 +43,7 @@ namespace :isolate do
 
   desc "Run an isolated command or subshell."
   task :sh, [:command] do |t, args|
-    exec args.command || ENV["SHELL"]
+    exec args.command || ENV["SHELL"] || ENV["COMSPEC"]
   end
 
   desc "Which isolated gems have updates available?"
