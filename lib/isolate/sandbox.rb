@@ -44,7 +44,7 @@ module Isolate
       load file if file
 
       if block_given?
-        block.to_s =~ /\@([^:]+):/
+        /\@(.+?):\d+/ =~ block.to_s
         files << ($1 || "inline block")
         instance_eval(&block)
       end
