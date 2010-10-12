@@ -44,7 +44,7 @@ class Hoe # :nodoc:
     def define_isolate_tasks # HACK
 
       # reset, now that they've had a chance to change it
-      @sandbox.options :path => isolate_dir
+      @sandbox.options :path => isolate_dir, :system => false
 
       # allows traditional extra{_dev}_deps calls to override
       (self.extra_deps + self.extra_dev_deps).each do |name, version|
