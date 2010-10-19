@@ -16,5 +16,5 @@ Hoe.spec "isolate" do
   self.readme_file      = "README.rdoc"
   self.testlib          = :minitest
 
-  extra_dev_deps << ["minitest", "~> 1.6"]
+  extra_dev_deps << ["minitest", "~> 1.7"]
 end
