@@ -1,3 +1,10 @@
+=== 3.0.0 / 2010-10-19
+
+* Remove deprecated Isolate.{gems,instance} methods.
+* Update RDoc location in the README.
+* Make isolated Hoe projects use :system => false by default.
+* Teach block file detection regex about Windows.
+
 === 2.1.2 / 2010-07-23
 
 * Teach `isolate:sh` how to work on Windows.
