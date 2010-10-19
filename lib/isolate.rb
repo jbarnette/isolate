@@ -26,29 +26,6 @@ module Isolate
     ENV["ISOLATE_ENV"] || ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
   end
 
-  # Deprecated. See Isolate.now!
-
-  def self.gems path, options = {}, &block # :nodoc:
-    warn "Isolate.gems is deprecated, use Isolate.now! instead.\n" +
-         "Isolate.gems will be removed in v3.0."
-    compat = {
-      :path => path,
-      :multiruby => false,
-      :system => false,
-    }
-
-    now! options.merge(compat), &block
-  end
-
-  # Deprecated. See Isolate.sandbox.
-
-  def self.instance
-    warn "Isolate.instance is deprecated, use Isolate.sandbox instead.\n" +
-         "Isolate.instance will be removed in v3.0."
-
-    sandbox
-  end
-
   @@sandbox = nil
 
   # A singleton instance of Isolate::Sandbox.
