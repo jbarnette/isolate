@@ -1,6 +1,7 @@
 require "rubygems"
 require "hoe"
 
+Hoe.plugins.delete :rubyforge
 Hoe.plugin :doofus, :git
 
 Hoe.spec "isolate" do
