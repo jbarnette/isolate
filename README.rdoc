@@ -178,7 +178,7 @@ public API, please see the RDoc.
 
 == Meta
 
-RDoc::         http://rdoc.info/projects/jbarnette/isolate
+RDoc::         http://rubydoc.info/gems/isolate/frames
 Bugs::         http://github.com/jbarnette/isolate/issues
 IRC::          #isolate on Freenode
 Mailing List:: isolate@librelist.com
