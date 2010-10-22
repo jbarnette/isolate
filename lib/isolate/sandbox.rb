@@ -156,13 +156,15 @@ module Isolate
       end
 
       paths = (ENV["GEM_PATH"] || "").split File::PATH_SEPARATOR
+      paths.push Gem.dir
+
       paths.clear unless system?
       paths.push path
 
       Gem.clear_paths
 
       ENV["GEM_HOME"] = path
-      ENV["GEM_PATH"] = paths.join File::PATH_SEPARATOR
+      ENV["GEM_PATH"] = paths.uniq.join File::PATH_SEPARATOR
       ENV["ISOLATED"] = path
 
       Gem.refresh
