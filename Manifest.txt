@@ -1,12 +1,16 @@
 .autotest
+.rvmrc
 CHANGELOG.rdoc
+Isolate
 Manifest.txt
 README.rdoc
 Rakefile
 lib/hoe/isolate.rb
 lib/isolate.rb
+lib/isolate/completely.rb
 lib/isolate/entry.rb
 lib/isolate/events.rb
+lib/isolate/installer.rb
 lib/isolate/now.rb
 lib/isolate/rake.rb
 lib/isolate/sandbox.rb
