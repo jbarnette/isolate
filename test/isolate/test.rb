@@ -4,7 +4,7 @@ require "minitest/autorun"
 module Isolate
   class Test < MiniTest::Unit::TestCase
     def setup
-      Isolate.refresh
+      Gem.refresh
 
       @env = ENV.to_hash
       @lp  = $LOAD_PATH.dup
