@@ -1,4 +1,5 @@
 require "isolate/events"
+require "isolate/installer"
 require "rubygems"
 require "rubygems/command"
 require "rubygems/dependency_installer"
@@ -79,9 +80,7 @@ module Isolate
 
       begin
         fire :installing, :installed do
-          installer = Gem::DependencyInstaller.new :development => false,
-            :generate_rdoc => false, :generate_ri => false,
-            :install_dir => @sandbox.path
+          installer = Isolate::Installer.new @sandbox
 
           Gem.sources += Array(options[:source]) if options[:source]
           Gem::Command.build_args = Array(options[:args]) if options[:args]
