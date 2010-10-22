@@ -70,10 +70,10 @@ module Isolate
   end
 
   # Poke RubyGems, since we've probably monkeyed with a bunch of paths
-  # and suchlike. Clears paths, loaded specs, and source indexes.
+  # and suchlike. Deprecated and scheduled for removal in v4.0.0.
 
   def self.refresh # :nodoc:
-    Gem.loaded_specs.clear
+    $stderr.puts "Deprecated, removal in v4.0.0. Use Gem.refresh."
     Gem.refresh
   end
 end
