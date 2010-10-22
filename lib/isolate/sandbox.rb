@@ -116,12 +116,11 @@ module Isolate
       fire :disabling
 
       ENV.replace @old_env
-      $LOAD_PATH.replace @old_load_path
 
       @enabled = false
 
       Gem.clear_paths
-      Isolate.refresh
+      Gem.refresh
 
       fire :disabled
 
@@ -134,20 +133,15 @@ module Isolate
       return self if enabled?
       fire :enabling
 
-      @old_env       = ENV.to_hash
-      @old_load_path = $LOAD_PATH.dup
-
-      lib = File.expand_path "../..", __FILE__
+      @old_env = ENV.to_hash
 
       unless system?
-        $LOAD_PATH.reject! do |p|
-          p != lib && Gem.path.any? { |gp| p.include?(gp) }
-        end
 
         # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
         # subshells, and the only way I can think of to do that is by
         # abusing RUBYOPT.
 
+        lib = File.expand_path "../..", __FILE__
         dirname = Regexp.escape lib
 
         unless ENV["RUBYOPT"] =~ /\s+-I\s*#{lib}\b/
@@ -171,7 +165,7 @@ module Isolate
       ENV["GEM_PATH"] = paths.join File::PATH_SEPARATOR
       ENV["ISOLATED"] = path
 
-      Isolate.refresh
+      Gem.refresh
 
       @enabled = true
       fire :enabled
