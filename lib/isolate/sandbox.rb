@@ -120,7 +120,9 @@ module Isolate
 
       @enabled = false
 
+      Gem.clear_paths
       Isolate.refresh
+
       fire :disabled
 
       begin; return yield ensure enable end if block_given?
@@ -134,9 +136,6 @@ module Isolate
 
       @old_env       = ENV.to_hash
       @old_load_path = $LOAD_PATH.dup
-
-      FileUtils.mkdir_p path
-      ENV["GEM_HOME"] = path
 
       lib = File.expand_path "../..", __FILE__
 
@@ -154,8 +153,6 @@ module Isolate
         unless ENV["RUBYOPT"] =~ /\s+-I\s*#{lib}\b/
           ENV["RUBYOPT"] = "#{ENV['RUBYOPT']} -I#{lib}"
         end
-
-        ENV["GEM_PATH"] = path
       end
 
       bin = File.join path, "bin"
@@ -164,10 +161,17 @@ module Isolate
         ENV["PATH"] = [bin, ENV["PATH"]].join File::PATH_SEPARATOR
       end
 
+      paths = (ENV["GEM_PATH"] || "").split File::PATH_SEPARATOR
+      paths.clear unless system?
+      paths.push path
+
+      Gem.clear_paths
+
+      ENV["GEM_HOME"] = path
+      ENV["GEM_PATH"] = paths.join File::PATH_SEPARATOR
       ENV["ISOLATED"] = path
 
       Isolate.refresh
-      Gem.path.unshift path if system?
 
       @enabled = true
       fire :enabled
@@ -222,13 +226,15 @@ module Isolate
         padding = Math.log10(installable.size).to_i + 1
         format  = "[%0#{padding}d/%s] Isolating %s (%s)."
 
+        FileUtils.mkdir_p path
+
         installable.each_with_index do |entry, i|
           log format % [i + 1, installable.size, entry.name, entry.requirement]
           entry.install
-        end
 
-        index.refresh!
-        Gem.source_index.refresh!
+          index.refresh!
+          Gem.source_index.refresh!
+        end
       end
 
       fire :installed
