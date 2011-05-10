@@ -57,7 +57,10 @@ class TestIsolateSandbox < Isolate::Test
 
   def test_cleanup
     s = sandbox :path => WITH_HOE, :install => true, :cleanup => true
-    s.activate # no gems on purpose
+
+    assert_silent do
+      s.activate # no gems on purpose
+    end
 
     expected = [["hoe",       "2.3.3", WITH_HOE],
                 ["rake",      "0.8.7", WITH_HOE],

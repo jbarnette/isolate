@@ -31,7 +31,10 @@ class TestIsolate < Isolate::Test
   def test_self_now!
     assert_nil Isolate.sandbox
 
-    Isolate.now! :path => WITH_HOE, :multiruby => false, :system => false do
+    Isolate.now!(:path      => WITH_HOE,
+                 :multiruby => false,
+                 :system    => false,
+                 :verbose   => false) do
       gem "hoe"
     end
 
