@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ryan Davis", "Eric Hodel", "Ara T Howard"]
   s.date = %q{2009-07-21}
-  s.default_executable = %q{rubyforge}
   s.description = %q{A script which automates a limited set of rubyforge operations.
 
 * Run 'rubyforge help' for complete usage.

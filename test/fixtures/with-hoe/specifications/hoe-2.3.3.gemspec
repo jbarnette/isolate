@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ryan Davis"]
   s.date = %q{2009-08-07}
-  s.default_executable = %q{sow}
   s.description = %q{Hoe is a rake/rubygems helper for project Rakefiles. It helps generate
 rubygems and includes a dynamic plug-in system allowing for easy
 extensibility. Hoe ships with plug-ins for all your usual project
