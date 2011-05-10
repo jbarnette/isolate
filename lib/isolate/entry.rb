@@ -67,7 +67,7 @@ module Isolate
 
     def activate
       fire :activating, :activated do
-        Gem.activate name, *requirement.as_list
+        Gem::Specification.find_by_name(name, *requirement.as_list).activate
       end
     end
 
@@ -110,7 +110,7 @@ module Isolate
     # The Gem::Specification for this entry.
 
     def specification
-      Gem.source_index.find_name(name, requirement).first
+      Gem::Specification.find_by_name(name, requirement)
     end
 
     # Updates this entry's environments, options, and

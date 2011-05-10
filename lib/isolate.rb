@@ -75,6 +75,6 @@ module Isolate
   def self.refresh # :nodoc:
     Gem.loaded_specs.clear
     Gem.clear_paths
-    Gem.source_index.refresh!
+    Gem::Specification.reset
   end
 end

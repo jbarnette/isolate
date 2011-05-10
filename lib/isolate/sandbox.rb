@@ -83,7 +83,7 @@ module Isolate
     def cleanup # :nodoc:
       fire :cleaning
 
-      installed = index.gems.values.sort
+      installed = Gem::Specification.map
       legit     = legitimize!
       extra     = installed - legit
 
@@ -214,8 +214,9 @@ module Isolate
       fire :installing
 
       installable = entries.select do |e|
-        !Gem.available?(e.name, *e.requirement.as_list) &&
-          e.matches?(environment)
+        specs = Gem::Specification.find_all_by_name(e.name,
+                                                    *e.requirement.as_list)
+        specs.empty? && e.matches?(environment)
       end
 
       unless installable.empty?
@@ -227,8 +228,7 @@ module Isolate
           entry.install
         end
 
-        index.refresh!
-        Gem.source_index.refresh!
+        Gem::Specification.reset
       end
 
       fire :installed
@@ -248,7 +248,6 @@ module Isolate
     def log s # :nodoc:
       $stderr.puts s if verbose?
     end
-
 
     def multiruby?
       @options.fetch :multiruby, true
@@ -289,7 +288,7 @@ module Isolate
       specs = []
 
       deps.flatten.each do |dep|
-        spec = index.find_name(dep.name, dep.requirement).last
+        spec = dep.to_spec rescue nil
 
         if spec
           specs.concat legitimize!(spec.runtime_dependencies)
