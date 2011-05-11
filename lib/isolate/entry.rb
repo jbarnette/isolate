@@ -67,7 +67,9 @@ module Isolate
 
     def activate
       fire :activating, :activated do
-        Gem::Specification.find_by_name(name, *requirement.as_list).activate
+        spec = self.specification
+        raise Gem::LoadError, "Couldn't resolve: #{self}" unless spec
+        spec.activate
       end
     end
 
