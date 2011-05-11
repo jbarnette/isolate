@@ -50,17 +50,14 @@ namespace :isolate do
 
   desc "Which isolated gems have updates available?"
   task :stale do
-    @@sandbox ||= Isolate::Sandbox.new
     outdated = []
-
-    Isolate.sandbox.entries.each do |entry|
-      unless entry.specification then
-        outdated << entry
-      end
-    end
+    sandbox  = Isolate.sandbox
+    outdated = sandbox.entries.reject { |entry| entry.specification }
 
     Gem::Specification.outdated.each do |name|
-      outdated << Isolate.sandbox.entries.find { |e| e.name == name }
+      entry = sandbox.entries.find { |e| e.name == name }
+      next unless entry
+      outdated << entry
     end
 
     outdated.sort_by { |e| e.name }.each do |entry|
