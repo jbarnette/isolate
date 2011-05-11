@@ -139,24 +139,25 @@ module Isolate
       @old_env       = ENV.to_hash
       @old_load_path = $LOAD_PATH.dup
 
+      path = self.path
+
       FileUtils.mkdir_p path
       ENV["GEM_HOME"] = path
 
-      lib = File.expand_path "../..", __FILE__
-
       unless system?
+        isolate_lib = File.expand_path "../..", __FILE__
+
+        # manually deactivate pre-isolate gems... is this just for 1.9.1?
         $LOAD_PATH.reject! do |p|
-          p != lib && Gem.path.any? { |gp| p.include?(gp) }
+          p != isolate_lib && Gem.path.any? { |gp| p.include?(gp) }
         end
 
         # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
         # subshells, and the only way I can think of to do that is by
         # abusing RUBYOPT.
 
-        dirname = Regexp.escape lib
-
-        unless ENV["RUBYOPT"] =~ /\s+-I\s*#{lib}\b/
-          ENV["RUBYOPT"] = "#{ENV['RUBYOPT']} -I#{lib}"
+        unless ENV["RUBYOPT"] =~ /\s+-I\s*#{Regexp.escape isolate_lib}\b/
+          ENV["RUBYOPT"] = "#{ENV['RUBYOPT']} -I#{isolate_lib}"
         end
 
         ENV["GEM_PATH"] = path
