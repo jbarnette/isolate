@@ -116,6 +116,8 @@ class TestIsolateSandbox < Isolate::Test
   end
 
   def test_idempotent_rubyopt_env
+    assert_nil ENV["RUBYOPT"], "sanity check to make sure ENV isn't infecting"
+
     @sandbox.enable
     rubyopt = ENV["RUBYOPT"]
     @sandbox.disable
@@ -192,7 +194,7 @@ class TestIsolateSandbox < Isolate::Test
 
     assert_equal [], s.entries
     assert_equal [], s.environments
-    assert_match(/tmp\/isolate/, s.path)
+    assert_match(/tmp\/test/, s.path)
 
     assert s.cleanup?
     assert s.install?
@@ -246,11 +248,11 @@ class TestIsolateSandbox < Isolate::Test
 
     v = [Gem.ruby_engine, RbConfig::CONFIG["ruby_version"]].join "-"
     s = sandbox :multiruby => true
-    p = File.expand_path("tmp/isolate/#{v}")
+    p = File.expand_path("tmp/test/#{v}")
 
     assert_equal p, s.path
 
-    s = sandbox :path => "tmp/isolate/#{v}", :multiruby => false
+    s = sandbox :path => "tmp/test/#{v}", :multiruby => false
     assert_equal p, s.path
   end
 

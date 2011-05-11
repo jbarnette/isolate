@@ -13,6 +13,8 @@ module Isolate
   class Sandbox
     include Events
 
+    DEFAULT_PATH = "tmp/isolate" # :nodoc:
+
     attr_reader :entries # :nodoc:
     attr_reader :environments # :nodoc:
     attr_reader :files # :nodoc:
@@ -259,7 +261,7 @@ module Isolate
     end
 
     def path
-      base = @options.fetch :path, "tmp/isolate"
+      base = @options.fetch :path, DEFAULT_PATH
 
       unless @options.key?(:multiruby) && @options[:multiruby] == false
         suffix = "#{Gem.ruby_engine}-#{RbConfig::CONFIG['ruby_version']}"

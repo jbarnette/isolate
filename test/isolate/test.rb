@@ -1,7 +1,11 @@
 require "isolate"
 require "minitest/autorun"
 
+ENV.delete "RUBYOPT" # Rakefile uses isolate, so we don't want this
+
 module Isolate
+  Sandbox::DEFAULT_PATH.replace "tmp/test" # change isolate dir for testing
+
   class Test < MiniTest::Unit::TestCase
     def setup
       Isolate.refresh
@@ -19,7 +23,7 @@ module Isolate
       $LOAD_PATH.replace @lp
       $LOADED_FEATURES.replace @lf
 
-      FileUtils.rm_rf "tmp/isolate"
+      FileUtils.rm_rf "tmp/test"
     end
   end
 end

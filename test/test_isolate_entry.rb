@@ -5,7 +5,7 @@ class TestIsolateEntry < Isolate::Test
   def setup
     @sandbox = Object.new
     def @sandbox.environments; @e ||= [] end
-    def @sandbox.path; "tmp/gems" end
+    def @sandbox.path; "tmp/test" end
 
     super
   end
