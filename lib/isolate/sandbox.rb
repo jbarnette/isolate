@@ -218,9 +218,7 @@ module Isolate
       fire :installing
 
       installable = entries.select do |e|
-        specs = Gem::Specification.find_all_by_name(e.name,
-                                                    *e.requirement.as_list)
-        specs.empty? && e.matches?(environment)
+        not e.specification && e.matches?(environment)
       end
 
       unless installable.empty?
@@ -294,14 +292,18 @@ module Isolate
       deps.flatten.each do |dep|
         spec = case dep
                when Gem::Dependency then
-                 dep.to_spec
+                 begin
+                   dep.to_spec
+                 rescue Gem::LoadError
+                   nil
+                 end
                when Isolate::Entry then
                  dep.specification
                else
                  raise "unknown dep: #{dep.inspect}"
                end
 
-        if spec
+        if spec then
           specs.concat legitimize!(spec.runtime_dependencies)
           specs << spec
         end

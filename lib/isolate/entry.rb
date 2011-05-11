@@ -110,10 +110,12 @@ module Isolate
       name == spec.name and requirement.satisfied_by? spec.version
     end
 
-    # The Gem::Specification for this entry.
+    # The Gem::Specification for this entry or nil if it isn't resolveable.
 
     def specification
       Gem::Specification.find_by_name(name, requirement)
+    rescue Gem::LoadError
+      nil
     end
 
     # Updates this entry's environments, options, and
