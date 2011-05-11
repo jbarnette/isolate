@@ -1,8 +1,11 @@
 require "rubygems"
 require "hoe"
 
+$:.unshift "lib"
+require "isolate/rake"
+
 Hoe.plugins.delete :rubyforge
-Hoe.plugin :doofus, :git
+Hoe.plugin :isolate, :doofus, :git
 
 Hoe.spec "isolate" do
   developer "John Barnette", "code@jbarnette.com"
@@ -16,5 +19,7 @@ Hoe.spec "isolate" do
   self.readme_file      = "README.rdoc"
   self.testlib          = :minitest
 
-  extra_dev_deps << ["minitest", "~> 1.7"]
+  dependency "minitest",   "~> 2.1.0", :development
+  dependency "hoe-doofus", "~> 1.0.0", :development
+  dependency "hoe-git",    "~> 1.3.0", :development
 end
