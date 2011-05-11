@@ -34,6 +34,10 @@ module Isolate
     @@sandbox
   end
 
+  def self.sandbox= o
+    @@sandbox = o
+  end
+
   # Declare an isolated RubyGems environment, installed in +path+. Any
   # block given will be <tt>instance_eval</tt>ed, see
   # Isolate::Sandbox#gem and Isolate::Sandbox#environment for the sort

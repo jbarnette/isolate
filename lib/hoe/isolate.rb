@@ -51,6 +51,8 @@ class Hoe # :nodoc:
         @sandbox.gem name, *Array(version)
       end
 
+      ::Isolate.sandbox = @sandbox
+
       @sandbox.activate
     end
   end
