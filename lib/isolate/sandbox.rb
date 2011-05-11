@@ -290,7 +290,14 @@ module Isolate
       specs = []
 
       deps.flatten.each do |dep|
-        spec = dep.to_spec rescue nil
+        spec = case dep
+               when Gem::Dependency then
+                 dep.to_spec
+               when Isolate::Entry then
+                 dep.specification
+               else
+                 raise "unknown dep: #{dep.inspect}"
+               end
 
         if spec
           specs.concat legitimize!(spec.runtime_dependencies)
