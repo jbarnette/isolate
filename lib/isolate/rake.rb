@@ -1,3 +1,5 @@
+require "isolate"
+
 namespace :isolate do
   desc "Show current isolated environment."
   task :env do
@@ -48,21 +50,16 @@ namespace :isolate do
 
   desc "Which isolated gems have updates available?"
   task :stale do
-    require "rubygems/source_index"
-    require "rubygems/spec_fetcher"
-
-    index    = Gem::SourceIndex.new
+    @@sandbox ||= Isolate::Sandbox.new
     outdated = []
 
     Isolate.sandbox.entries.each do |entry|
-      if entry.specification
-        index.add_spec entry.specification
-      else
+      unless entry.specification then
         outdated << entry
       end
     end
 
-    index.outdated.each do |name|
+    Gem::Specification.outdated.each do |name|
       outdated << Isolate.sandbox.entries.find { |e| e.name == name }
     end
 
