@@ -4,6 +4,7 @@ require "isolate/events"
 require "rbconfig"
 require "rubygems/defaults"
 require "rubygems/uninstaller"
+require "rubygems/deprecate"
 
 module Isolate
 
@@ -312,5 +313,8 @@ module Isolate
 
       specs.uniq
     end
+
+    extend Deprecate
+    deprecate :index, :none, 2011, 11
   end
 end
