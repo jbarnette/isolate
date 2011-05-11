@@ -97,11 +97,13 @@ module Isolate
           log format % [i + 1, extra.size, e.full_name]
 
           Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
-            Gem::Uninstaller.new(e.name,
-                                 :version     => e.version,
-                                 :ignore      => true,
-                                 :executables => true,
-                                 :install_dir => path).uninstall
+            uninstaller =
+              Gem::Uninstaller.new(e.name,
+                                   :version     => e.version,
+                                   :ignore      => true,
+                                   :executables => true,
+                                   :install_dir => path)
+            uninstaller.uninstall
           end
         end
       end
