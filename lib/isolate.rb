@@ -34,6 +34,9 @@ module Isolate
     @@sandbox
   end
 
+  # Set the singleton. Intended for Hoe::Isolate and other tools that
+  # make their own.
+
   def self.sandbox= o
     @@sandbox = o
   end
