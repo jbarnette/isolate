@@ -1,3 +1,19 @@
+=== 3.0.1 / 2011-05-11
+
+* 6 minor enhancements:
+
+  * Added Entry#to_s and #inspect to make it much more readable.
+  * Added Isolate.sandbox= and used it from Hoe::Isolate plugin.
+  * Deprecated Sandbox#index.
+  * Entry#specification now returns nil if it doesn't resolve to anything.
+  * Refactored Sandbox's default path so that tests won't collide with our Rakefile.
+  * We now require rubygems >= 1.8.2.
+
+* 2 bug fixes:
+
+  * Cleaned up all warnings caused by rubygems 1.8 deprecations.
+  * Fixed Sandbox#legitimize! to properly deal with Gem::Dependency.
+
 === 3.0.0 / 2010-10-19
 
 * Remove deprecated Isolate.{gems,instance} methods.
