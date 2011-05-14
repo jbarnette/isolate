@@ -90,6 +90,9 @@ module Isolate
       legit     = legitimize!
       extra     = installed - legit
 
+      gem_dir = Gem.dir
+      extra.reject! { |s| s.base_dir != gem_dir }
+
       unless extra.empty?
         padding = Math.log10(extra.size).to_i + 1
         format  = "[%0#{padding}d/%s] Nuking %s."
