@@ -2,6 +2,7 @@ require "isolate/test"
 
 class TestIsolateSandbox < Isolate::Test
   WITH_HOE = "test/fixtures/with-hoe"
+  SYSTEM   = "test/fixtures/system"
 
   def setup
     @sandbox = sandbox
@@ -55,18 +56,72 @@ class TestIsolateSandbox < Isolate::Test
   # TODO: cleanup with 2 versions of same gem, 1 activated
   # TODO: install with 1 older version, 1 new gem to be installed
 
-  def test_cleanup
-    s = sandbox :path => WITH_HOE, :install => true, :cleanup => true
+  def test_cleanup_all
+    with_env_setup do
+      s = sandbox :path => WITH_HOE, :install => true, :cleanup => true
 
-    assert_silent do
-      s.activate # no gems on purpose
+      assert_silent do
+        s.activate # no gems on purpose
+      end
+
+      expected = [["hoe",       "2.3.3", WITH_HOE],
+                  ["rake",      "0.8.7", WITH_HOE],
+                  ["rubyforge", "1.0.4", WITH_HOE]]
+
+      assert_equal expected, Gem::Uninstaller.value
     end
+  end
 
-    expected = [["hoe",       "2.3.3", WITH_HOE],
-                ["rake",      "0.8.7", WITH_HOE],
-                ["rubyforge", "1.0.4", WITH_HOE]]
+  def test_cleanup_all_system
+    with_env_setup do
+      s = sandbox(:path => WITH_HOE, :install => true, :cleanup => true,
+                  :system => true)
 
-    assert_equal expected, Gem::Uninstaller.value
+      assert_silent do
+        s.activate # no gems on purpose
+      end
+
+      expected = [["hoe",       "2.3.3", WITH_HOE],
+                  ["rake",      "0.8.7", WITH_HOE],
+                  ["rubyforge", "1.0.4", WITH_HOE]]
+
+      assert_equal expected, Gem::Uninstaller.value.sort
+    end
+  end
+
+  def test_cleanup_partial
+    with_env_setup do
+      s = sandbox :path => WITH_HOE, :install => true, :cleanup => true
+
+      s.gem "rake", "0.8.7"
+
+      assert_silent do
+        s.activate
+      end
+
+      expected = [["hoe",       "2.3.3", WITH_HOE],
+                  ["rubyforge", "1.0.4", WITH_HOE]]
+
+      assert_equal expected, Gem::Uninstaller.value
+    end
+  end
+
+  def test_cleanup_partial_system
+    with_env_setup do
+      s = sandbox(:path => WITH_HOE, :install => true, :cleanup => true,
+                  :system => true)
+
+      s.gem "rake", "0.8.7"
+
+      assert_silent do
+        s.activate
+      end
+
+      expected = [["hoe",       "2.3.3", WITH_HOE],
+                  ["rubyforge", "1.0.4", WITH_HOE]]
+
+      assert_equal expected, Gem::Uninstaller.value.sort
+    end
   end
 
   def test_disable
@@ -204,9 +259,12 @@ class TestIsolateSandbox < Isolate::Test
   end
 
   def test_initialize_override_defaults
-    s = Isolate::Sandbox.new :path => "x", :cleanup => false,
-      :install => false, :system => false,
-      :verbose => false, :multiruby => false
+    s = Isolate::Sandbox.new(:path      => "x",
+                             :cleanup   => false,
+                             :install   => false,
+                             :system    => false,
+                             :verbose   => false,
+                             :multiruby => false)
 
     assert_equal File.expand_path("x"), s.path
 
@@ -266,15 +324,27 @@ class TestIsolateSandbox < Isolate::Test
       "#{name} is NOT a loaded gemspec, and it should be!"
   end
 
-  def sandbox *args, &block
-    opts = {
+  def sandbox opts = {}, &block
+    defaults = {
       :install   => false,
       :system    => false,
       :verbose   => false,
       :multiruby => false
     }
 
-    opts.merge! args.pop if Hash === args.last
-    Isolate::Sandbox.new opts, &block
+    Isolate::Sandbox.new defaults.merge(opts), &block
+  end
+
+  def with_env_setup
+    old_gem_path = ENV["GEM_PATH"]
+    old_gem_home = ENV["GEM_HOME"]
+    ENV["GEM_HOME"] = "test/fixtures/with-hoe"
+    ENV["GEM_PATH"] = "test/fixtures/system"
+    Gem.refresh
+
+    yield
+  ensure
+    ENV["GEM_PATH"] = old_gem_path
+    ENV["GEM_HOME"] = old_gem_home
   end
 end
