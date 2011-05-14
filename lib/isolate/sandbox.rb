@@ -103,7 +103,7 @@ module Isolate
                                    :version     => e.version,
                                    :ignore      => true,
                                    :executables => true,
-                                   :install_dir => path)
+                                   :install_dir => e.base_dir)
             uninstaller.uninstall
           end
         end
