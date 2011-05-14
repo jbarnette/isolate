@@ -1,3 +1,11 @@
+=== 3.0.2 / 2011-05-14
+
+* 3 bug fixes:
+
+  * Cleanup shouldn't try to uninstall specs outside of our sandbox.
+  * Pass spec.base_dir to the uninstaller during cleanup.
+  * We shouldn't manipulate Gem.path, but if we do, we should be smart/clean about it.
+
 === 3.0.1 / 2011-05-11
 
 * 6 minor enhancements:
