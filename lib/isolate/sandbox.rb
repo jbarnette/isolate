@@ -172,8 +172,11 @@ module Isolate
 
       ENV["ISOLATED"] = path
 
+      if system? then
+        Gem.path.unshift path # HACK: this is just wrong!
+        Gem.path.uniq!        # HACK: needed for the previous line :(
+      end
       Isolate.refresh
-      Gem.path.unshift path if system?
 
       @enabled = true
       fire :enabled
