@@ -86,7 +86,7 @@ module Isolate
     def cleanup # :nodoc:
       fire :cleaning
 
-      installed = Gem::Specification.map
+      installed = Gem::Specification.map.to_a
       legit     = legitimize!
       extra     = installed - legit
 
