@@ -46,7 +46,7 @@ end
 class Gem::Uninstaller
   extend BrutalStub
 
-  attr_reader :gem, :version, :gem_home
+  attr_reader :gem, :version
   alias old_uninstall uninstall
 
   def uninstall
