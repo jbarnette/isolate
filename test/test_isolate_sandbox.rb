@@ -146,8 +146,8 @@ class TestIsolateSandbox < Isolate::Test
   end
 
   def test_enable
-    refute_empty Gem.find_files("hoe.rb"),
-      "There's a hoe.rb somewhere in the current env."
+    refute_empty Gem.find_files("rake.rb"),
+      "There's a rake.rb somewhere in the current env."
 
     assert_same @sandbox, @sandbox.enable
 
