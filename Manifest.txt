@@ -14,6 +14,7 @@ test/fixtures/blort-0.0.gem
 test/fixtures/isolate.rb
 test/fixtures/override.rb
 test/fixtures/override.rb.local
+test/fixtures/system/specifications/rcov-0.9.9.gemspec
 test/fixtures/with-hoe/specifications/hoe-2.3.3.gemspec
 test/fixtures/with-hoe/specifications/rake-0.8.7.gemspec
 test/fixtures/with-hoe/specifications/rubyforge-1.0.4.gemspec
