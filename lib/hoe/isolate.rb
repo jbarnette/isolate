@@ -28,9 +28,10 @@ class Hoe # :nodoc:
       Hoe.plugins.unshift Hoe.plugins.delete(:isolate)
 
       self.isolate_dir ||= "tmp/isolate"
-      @sandbox = ::Isolate::Sandbox.new
 
-      @sandbox.entries.each do |entry|
+      ::Isolate.sandbox ||= ::Isolate::Sandbox.new
+
+      ::Isolate.sandbox.entries.each do |entry|
         dep = [entry.name, *entry.requirement.as_list]
 
         if entry.environments.include? "development"
@@ -42,18 +43,22 @@ class Hoe # :nodoc:
     end
 
     def define_isolate_tasks # HACK
+      sandbox = ::Isolate.sandbox
 
       # reset, now that they've had a chance to change it
-      @sandbox.options :path => isolate_dir, :system => false
+      sandbox.options :path => isolate_dir, :system => false
 
-      # allows traditional extra{_dev}_deps calls to override
-      (self.extra_deps + self.extra_dev_deps).each do |name, version|
-        @sandbox.gem name, *Array(version)
+      self.extra_deps.each do |name, version|
+        sandbox.gem name, *Array(version)
       end
 
-      ::Isolate.sandbox = @sandbox
+      self.extra_dev_deps.each do |name, version|
+        sandbox.env "development" do
+          sandbox.gem name, *Array(version)
+        end
+      end
 
-      @sandbox.activate
+      sandbox.activate
     end
   end
 end
