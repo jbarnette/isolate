@@ -1,3 +1,21 @@
+=== 3.1.0 / 2011-05-17
+
+* 4 minor enhancements:
+
+  * Added ZenTest as a development dependency so rake multi works in isolation.
+  * Added rake task git:freshen to forcefully remove stale gems.
+  * Extracted remove from cleanup method so rake tasks can use remove.
+  * Switched to minitest plugin in hoe spec
+
+* 6 bug fixes:
+
+  * Fixed 1.9.x warnings
+  * Fixed a test broken only in isolation from hoe itself.
+  * Fixed an enumeration bug caused by my not running `rake multi` sooner. (Eric Wong)
+  * Fixed requirements in readme.
+  * Hoe plugin now properly adds development dependencies.
+  * Hoe plugin now properly uses (and possibly defines) the Isolate.sandbox.
+
 === 3.0.2 / 2011-05-14
 
 * 3 bug fixes:
