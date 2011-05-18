@@ -69,4 +69,19 @@ namespace :isolate do
       puts "#{entry.name} (#{local} < #{remote})"
     end
   end
+
+  desc "Removes gems that have updates available"
+  task :freshen do
+    outdated = []
+    sandbox  = Isolate.sandbox
+    extra = sandbox.entries.reject { |entry| entry.specification }
+
+    Gem::Specification.outdated.each do |name|
+      entry = sandbox.entries.find { |e| e.name == name }
+      next unless entry
+      extra << entry.specification
+    end
+
+    sandbox.remove(*extra)
+  end
 end
