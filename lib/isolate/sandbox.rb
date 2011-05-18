@@ -93,24 +93,7 @@ module Isolate
       gem_dir = Gem.dir
       extra.reject! { |s| s.base_dir != gem_dir }
 
-      unless extra.empty?
-        padding = Math.log10(extra.size).to_i + 1
-        format  = "[%0#{padding}d/%s] Nuking %s."
-
-        extra.each_with_index do |e, i|
-          log format % [i + 1, extra.size, e.full_name]
-
-          Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
-            uninstaller =
-              Gem::Uninstaller.new(e.name,
-                                   :version     => e.version,
-                                   :ignore      => true,
-                                   :executables => true,
-                                   :install_dir => e.base_dir)
-            uninstaller.uninstall
-          end
-        end
-      end
+      self.remove(*extra)
 
       fire :cleaned
     end
@@ -277,6 +260,27 @@ module Isolate
       end
 
       File.expand_path base
+    end
+
+    def remove(*extra)
+      unless extra.empty?
+        padding = Math.log10(extra.size).to_i + 1
+        format  = "[%0#{padding}d/%s] Nuking %s."
+
+        extra.each_with_index do |e, i|
+          log format % [i + 1, extra.size, e.full_name]
+
+          Gem::DefaultUserInteraction.use_ui Gem::SilentUI.new do
+            uninstaller =
+              Gem::Uninstaller.new(e.name,
+                                   :version     => e.version,
+                                   :ignore      => true,
+                                   :executables => true,
+                                   :install_dir => e.base_dir)
+            uninstaller.uninstall
+          end
+        end
+      end
     end
 
     def system?
