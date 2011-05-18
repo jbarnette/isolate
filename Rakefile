@@ -8,10 +8,10 @@ require "isolate/rake"
 Isolate.now! :system => false do
   env "development" do
     gem "hoe-seattlerb", "> 0"
-    gem "minitest",   "~> 2.1.0"
+    gem "minitest",   "~> 2.1"
     gem "hoe-doofus", "~> 1.0.0"
-    gem "hoe-git",    "~> 1.3.0"
-    gem "ZenTest",    "~> 4.5.0"
+    gem "hoe-git",    "~> 1.3"
+    gem "ZenTest",    "~> 4.5"
   end
 end
 
