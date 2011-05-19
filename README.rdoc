@@ -83,7 +83,7 @@ your lib's development, runtime, and test dependencies without
 polluting your system RubyGems, and run your tests/specs in total
 isolation.
 
-Assuming you have a recent Hoe and isolate's installed, it's as simple
+Assuming you have a recent Hoe and Isolate is installed, it's as simple
 as putting:
 
     Hoe.plugin :isolate
