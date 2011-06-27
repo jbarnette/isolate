@@ -209,7 +209,7 @@ module Isolate
       fire :installing
 
       installable = entries.select do |e|
-        not e.specification && e.matches?(environment)
+        !e.specification && e.matches?(environment)
       end
 
       unless installable.empty?

@@ -53,6 +53,15 @@ class TestIsolateSandbox < Isolate::Test
       Gem::DependencyInstaller.value.shift
   end
 
+  def test_activate_install_with_different_environment
+    s = sandbox :path => WITH_HOE, :install => true
+    s.environment(:borg) { gem 'foo' }
+
+    # This won't crash because it should not install or activate the env
+    s.activate
+    refute_equal 'foo', Gem::DependencyInstaller.value.shift[0]
+  end
+
   # TODO: cleanup with 2 versions of same gem, 1 activated
   # TODO: install with 1 older version, 1 new gem to be installed
 
