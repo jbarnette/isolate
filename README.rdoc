@@ -1,4 +1,4 @@
-= Isolate
+a Isolate
 
 * http://github.com/jbarnette/isolate
 
@@ -61,6 +61,9 @@ In <tt>config/boot.rb</tt>:
 Construct your <tt>Isolate</tt> file as above. Be sure to remove any
 references to <tt>Bundler.setup</tt> and <tt>Bundler.require</tt> from
 <tt>config/boot.rb</tt> and <tt>config/application.rb</tt>.
+
+Don't forget to require files from your isolated gems in the appropriate
+places.  Unlike bundler isolate does not automatically require any files.
 
 === Sinatra, Rack, and Anything Else
 
