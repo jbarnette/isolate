@@ -1,4 +1,4 @@
-a Isolate
+= Isolate
 
 * http://github.com/jbarnette/isolate
 
