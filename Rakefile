@@ -19,8 +19,9 @@ Hoe.plugins.delete :rubyforge
 Hoe.plugin :isolate, :doofus, :git, :minitest
 
 Hoe.spec "isolate" do
-  developer "John Barnette", "code@jbarnette.com"
   developer "Ryan Davis",    "ryand-ruby@zenspider.com"
+  developer "Eric Hodel",    "drbrain@segment7.net"
+  developer "John Barnette", "code@jbarnette.com"
 
   require_rubygems_version ">= 1.8.2"
 
