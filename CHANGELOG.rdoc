@@ -1,3 +1,10 @@
+=== 3.1.1 / 2011-07-21
+
+* 2 bug fixes:
+
+  * Deprecate is now Gem::Deprecate.  Try both.
+  * Don't install gems for other environments. (rhburrows)
+
 === 3.1.0 / 2011-05-19
 
 * 4 minor enhancements:
