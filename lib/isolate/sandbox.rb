@@ -324,7 +324,7 @@ module Isolate
       specs.uniq
     end
 
-    dep_module = Gem.const_defined?(:Deprecate) ? Gem::Deprecate : Deprecate
+    dep_module = defined?(Gem::Deprecate) ? Gem::Deprecate : Deprecate
     extend dep_module
     deprecate :index, :none, 2011, 11
   end
