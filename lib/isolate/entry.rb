@@ -88,8 +88,8 @@ module Isolate
                                          :generate_ri   => false,
                                          :install_dir   => @sandbox.path)
 
-          Gem.sources += Array(options[:source]) if options[:source]
           Gem::Command.build_args = Array(options[:args]) if options[:args]
+          Gem.sources += Array(options[:source])          if options[:source]
 
           installer.install @file || name, requirement
         end
