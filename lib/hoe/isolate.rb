@@ -42,7 +42,7 @@ class Hoe # :nodoc:
       end
     end
 
-    def define_isolate_tasks # HACK
+    def define_isolate_tasks
       sandbox = ::Isolate.sandbox
 
       # reset, now that they've had a chance to change it
@@ -58,7 +58,11 @@ class Hoe # :nodoc:
         end
       end
 
-      sandbox.activate
+      task :isolate do
+        sandbox.activate
+      end
+
+      task :test => :isolate
     end
   end
 end
