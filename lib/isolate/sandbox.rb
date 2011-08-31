@@ -86,12 +86,11 @@ module Isolate
     def cleanup # :nodoc:
       fire :cleaning
 
-      installed = Gem::Specification.map.to_a
-      legit     = legitimize!
-      extra     = installed - legit
-
       gem_dir = Gem.dir
-      extra.reject! { |s| s.base_dir != gem_dir }
+
+      global, local = Gem::Specification.partition { |s| s.base_dir != gem_dir }
+      legit = legitimize!
+      extra = (local - legit) + (local & global)
 
       self.remove(*extra)
 
