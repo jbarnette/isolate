@@ -1,3 +1,20 @@
+=== 3.2.0 / 2011-08-31
+
+* 1 major enhancement:
+
+  * hoe/isolate no longer globally activates isolate. Attach via :isolate dependency
+
+* 2 minor enhancements:
+
+  * Fix for custom gem server source overriding. (yaksnrainbows)
+  * Remove isolated gems that are now satisfied globally. (luis)
+
+* 3 bug fixes:
+
+  * Reworked rakefile and dependencies
+  * Fix for custom gem server sources being overwritten by rubygems
+  * Resolve a constant undefined error with rake on ruby-1.9.2
+
 === 3.1.2 / 2011-08-09
 
 * 1 bug fix:
