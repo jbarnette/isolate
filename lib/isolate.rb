@@ -19,7 +19,7 @@ module Isolate
 
   # What environment should be isolated? Consults environment
   # variables <tt>ISOLATE_ENV</tt>, <tt>RAILS_ENV</tt>, and
-  # <tt>RACK_ENV</tt>. Defaults to <tt>development"/tt> if none are
+  # <tt>RACK_ENV</tt>. Defaults to <tt>development"</tt> if none are
   # set.
 
   def self.env
