@@ -1,3 +1,11 @@
+=== 3.2.1 / 2011-11-09
+
+* 2 bug fixes:
+
+  * Now that rubygems has full dependency resolution, remove it from
+    the "Not Gonna Happen" section in README.rdoc.
+  *  Fix broken close tag in documentation. (pbevin)
+
 === 3.2.0 / 2011-08-31
 
 * 1 major enhancement:
