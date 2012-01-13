@@ -19,7 +19,7 @@ module Isolate
 
   # What environment should be isolated? Consults environment
   # variables <tt>ISOLATE_ENV</tt>, <tt>RAILS_ENV</tt>, and
-  # <tt>RACK_ENV</tt>. Defaults to <tt>development"</tt> if none are
+  # <tt>RACK_ENV</tt>. Defaults to <tt>"development"</tt> if none are
   # set.
 
   def self.env
@@ -62,7 +62,7 @@ module Isolate
   #              segregated by Ruby version. Default is +true+.
   #
   # :path:: Where should isolated gems be kept? Default is
-  #         <tt>tmp/isolate"</tt>, and a Ruby version specifier suffix
+  #         <tt>"tmp/isolate"</tt>, and a Ruby version specifier suffix
   #         will be added if <tt>:multiruby</tt> is +true+.
   #
   # :system:: Should system gems be allowed to satisfy dependencies?
