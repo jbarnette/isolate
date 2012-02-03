@@ -1,3 +1,9 @@
+=== 3.2.3 / 2012-02-03
+
+* 1 bug fix:
+
+  * isolate/completely.rb was never merged to master and was left behind.
+
 === 3.2.2 / 2012-02-02
 
 * 2 bug fixes:
