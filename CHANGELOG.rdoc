@@ -1,3 +1,10 @@
+=== 3.2.2 / 2012-02-02
+
+* 2 bug fixes:
+
+  * Isolate hoe plugin shouldn't sandbox until the isolate task triggers. ARGH. I suck.
+  * Add missing opening quotes in docs (semaperepelitsa)
+
 === 3.2.1 / 2011-11-09
 
 * 2 bug fixes:
