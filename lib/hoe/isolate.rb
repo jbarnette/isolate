@@ -48,17 +48,17 @@ class Hoe # :nodoc:
       # reset, now that they've had a chance to change it
       sandbox.options :path => isolate_dir, :system => false
 
-      self.extra_deps.each do |name, version|
-        sandbox.gem name, *Array(version)
-      end
-
-      self.extra_dev_deps.each do |name, version|
-        sandbox.env "development" do
+      task :isolate do
+        self.extra_deps.each do |name, version|
           sandbox.gem name, *Array(version)
         end
-      end
 
-      task :isolate do
+        self.extra_dev_deps.each do |name, version|
+          sandbox.env "development" do
+            sandbox.gem name, *Array(version)
+          end
+        end
+
         sandbox.activate
       end
 
