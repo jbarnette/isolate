@@ -5,7 +5,7 @@ $:.unshift "lib"
 require "isolate/rake"
 
 Hoe.plugins.delete :rubyforge
-Hoe.plugin :isolate, :doofus, :git, :minitest
+Hoe.plugin :isolate, :doofus, :git, :minitest, :email
 
 Hoe.spec "isolate" do
   developer "Ryan Davis",    "ryand-ruby@zenspider.com"
