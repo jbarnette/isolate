@@ -139,6 +139,8 @@ class TestIsolateSandbox < Isolate::Test
   end
 
   def test_cleanup_redundant
+    skip "This test is now invalid as rubygems de-dupes internally. Need to figure out what to do"
+
     with_env_setup SYSTEM2 do
       s = sandbox(:path => WITH_HOE, :install => true, :cleanup => true,
                   :system => true)
