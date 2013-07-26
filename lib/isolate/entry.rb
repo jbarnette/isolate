@@ -86,6 +86,7 @@ module Isolate
             Gem::DependencyInstaller.new(:development   => false,
                                          :generate_rdoc => false,
                                          :generate_ri   => false,
+                                         :document      => [],
                                          :install_dir   => @sandbox.path)
 
           Gem::Command.build_args = Array(options[:args]) if options[:args]
