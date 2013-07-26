@@ -161,7 +161,7 @@ class TestIsolateSandbox < Isolate::Test
 
   def test_disable
     home, path, bin = ENV.values_at "GEM_HOME", "GEM_PATH", "PATH"
-    load_path  = $LOAD_PATH.dup
+    # load_path  = $LOAD_PATH.dup
 
     @sandbox.enable
 
