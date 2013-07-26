@@ -4,7 +4,6 @@ require "hoe"
 $:.unshift "lib"
 require "isolate/rake"
 
-Hoe.plugins.delete :rubyforge
 Hoe.plugin :isolate, :doofus, :git, :minitest, :email
 
 Hoe.spec "isolate" do
@@ -19,7 +18,7 @@ Hoe.spec "isolate" do
   self.readme_file      = "README.rdoc"
 
   dependency "hoe-seattlerb", "~> 1.2", :development
-  dependency "minitest",      "~> 2.1", :development
+  dependency "minitest",      "~> 5.0", :development
   dependency "hoe-doofus",    "~> 1.0", :development
   dependency "hoe-git",       "~> 1.3", :development
   dependency "ZenTest",       "~> 4.5", :development

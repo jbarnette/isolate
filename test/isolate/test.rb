@@ -1,12 +1,13 @@
 require "isolate"
 require "minitest/autorun"
+require "stringio" # avoid resets via LOADED_FEATURES teardown below
 
 ENV.delete "RUBYOPT" # Rakefile uses isolate, so we don't want this
 
 module Isolate
   Sandbox::DEFAULT_PATH.replace "tmp/test" # change isolate dir for testing
 
-  class Test < MiniTest::Unit::TestCase
+  class Test < Minitest::Test
     def setup
       Isolate.refresh
 
