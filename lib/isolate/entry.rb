@@ -84,6 +84,7 @@ module Isolate
 
           installer =
             Gem::DependencyInstaller.new(:development   => false,
+                                         :document      => [],
                                          :generate_rdoc => false,
                                          :generate_ri   => false,
                                          :document      => [],
