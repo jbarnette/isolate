@@ -4,7 +4,7 @@ require "hoe"
 $:.unshift "lib"
 require "isolate/rake"
 
-Hoe.plugin :isolate, :doofus, :git, :minitest, :email
+Hoe.plugin :isolate, :doofus, :git, :seattlerb
 
 Hoe.spec "isolate" do
   developer "Ryan Davis",    "ryand-ruby@zenspider.com"
