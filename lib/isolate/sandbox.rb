@@ -6,6 +6,14 @@ require "rubygems/defaults"
 require "rubygems/uninstaller"
 require "rubygems/deprecate"
 
+# disable default gems getting in the way of everything.
+
+class Gem::BasicSpecification # :nodoc:
+  def self.default_specifications_dir # :nodoc:
+    ""
+  end
+end
+
 module Isolate
 
   # An isolated environment. This class exposes lifecycle events for
