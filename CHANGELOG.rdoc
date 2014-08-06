@@ -1,3 +1,9 @@
+=== 3.3.0 / 2014-08-06
+
+* 1 minor enhancement:
+
+  * Disable default/system gems across the board.
+
 === 3.2.4 / 2014-01-22
 
 * 1 minor enhancement:
