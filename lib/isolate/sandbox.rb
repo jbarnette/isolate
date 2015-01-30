@@ -9,6 +9,9 @@ require "rubygems/deprecate"
 # disable default gems getting in the way of everything.
 
 class Gem::BasicSpecification # :nodoc:
+  class << self
+    alias old_default_specifications_dir default_specifications_dir
+  end
   def self.default_specifications_dir # :nodoc:
     ""
   end
