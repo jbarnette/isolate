@@ -1,3 +1,9 @@
+=== 3.3.1 / 2015-02-02
+
+* 1 bug fix:
+
+  * Remove warning on redefined method on Gem::BasicSpecification.
+
 === 3.3.0 / 2014-08-06
 
 * 1 minor enhancement:
