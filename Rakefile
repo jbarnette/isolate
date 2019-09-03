@@ -18,6 +18,11 @@ Hoe.spec "isolate" do
   self.history_file     = "CHANGELOG.rdoc"
   self.readme_file      = "README.rdoc"
 
+  # taken from hoe/seattlerb.rb to avoid loading perforce plugin
+  # REFACTOR: hoe/seattlerb.rb should just load plugins
+  base = "/data/www/docs.seattlerb.org"
+  rdoc_locations << "docs-push.seattlerb.org:#{base}/#{remote_rdoc_dir}"
+
   dependency "hoe-seattlerb", "~> 1.2", :development
   dependency "minitest",      "~> 5.0", :development
   dependency "hoe-doofus",    "~> 1.0", :development
