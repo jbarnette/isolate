@@ -1,6 +1,6 @@
 = Isolate
 
-* http://github.com/jbarnette/isolate
+home :: http://github.com/jbarnette/isolate
 
 == Description
 
