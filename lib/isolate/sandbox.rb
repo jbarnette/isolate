@@ -264,7 +264,7 @@ module Isolate
     def path
       base = @options.fetch :path, DEFAULT_PATH
 
-      unless @options.key?(:multiruby) && @options[:multiruby] == false
+      if multiruby? then
         suffix = "#{Gem.ruby_engine}-#{RbConfig::CONFIG['ruby_version']}"
         base   = File.join(base, suffix) unless base =~ /#{suffix}/
       end
