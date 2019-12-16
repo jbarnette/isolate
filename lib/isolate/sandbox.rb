@@ -144,10 +144,13 @@ module Isolate
       unless system?
         isolate_lib = File.expand_path "../..", __FILE__
 
-        # manually deactivate pre-isolate gems... is this just for 1.9.1?
-        $LOAD_PATH.reject! do |p|
-          p != isolate_lib && Gem.path.any? { |gp| p.include?(gp) }
-        end
+        # manually deactivate pre-isolate gems...
+        $LOAD_PATH.reject! { |path|
+          (path.start_with?("/")  && # only full paths
+           path.end_with?("/lib") && # and that end in lib
+           path != isolate_lib    &&
+           Gem.path.reject(&:empty?).any? { |gem_path| path.include?(gem_path) })
+        }
 
         # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
         # subshells, and the only way I can think of to do that is by
