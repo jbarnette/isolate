@@ -23,6 +23,8 @@ Hoe.spec "isolate" do
   self.history_file     = "CHANGELOG.rdoc"
   self.readme_file      = "README.rdoc"
 
+  license "MIT"
+
   # taken from hoe/seattlerb.rb to avoid loading perforce plugin
   # REFACTOR: hoe/seattlerb.rb should just load plugins
   base = "/data/www/docs.seattlerb.org"
