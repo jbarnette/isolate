@@ -2,6 +2,11 @@ require "rubygems"
 require "hoe"
 
 $:.unshift "lib"
+
+ENV["GEM_PATH"] ||= ""
+ENV["GEM_PATH"] += ":#{Dir["tmp/isolate/ruby-*"].sort.last}"
+Gem.paths = ENV
+
 require "isolate/rake"
 
 Hoe.plugin :isolate, :doofus, :git
