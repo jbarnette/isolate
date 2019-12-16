@@ -36,3 +36,10 @@ Hoe.spec "isolate" do
   dependency "hoe-git",       "~> 1.3", :development
   dependency "ZenTest",       "~> 4.5", :development
 end
+
+# allow for isolated dependencies
+task :check_extra_deps => :isolate do
+  # but still install non-isolated
+  ENV.delete "GEM_HOME"
+  Gem.paths = ENV
+end
