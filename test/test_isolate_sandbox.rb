@@ -294,7 +294,7 @@ class TestIsolateSandbox < Isolate::Test
     assert s.install?
     assert s.system?
     assert s.verbose?
-    assert s.multiruby?
+    refute s.multiruby?
   end
 
   def test_initialize_override_defaults

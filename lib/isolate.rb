@@ -59,7 +59,7 @@ module Isolate
   #
   # :multiruby:: Should Isolate assume that multiple Ruby versions
   #              will be used simultaneously? If so, gems will be
-  #              segregated by Ruby version. Default is +true+.
+  #              segregated by Ruby version. Default is +false+.
   #
   # :path:: Where should isolated gems be kept? Default is
   #         <tt>"tmp/isolate"</tt>, and a Ruby version specifier suffix

@@ -256,7 +256,7 @@ module Isolate
     end
 
     def multiruby?
-      @options.fetch :multiruby, true
+      @options.fetch :multiruby, false
     end
 
     def options options = nil
