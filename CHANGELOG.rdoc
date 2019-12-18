@@ -1,3 +1,16 @@
+=== 3.4.0 / 2019-12-17
+
+* 2 minor enhancements:
+
+  * Switched multiruby default value to false.
+  * Added logic to rebuild extensions as needed now that multiruby defaults to false.
+
+* 3 bug fixes:
+
+  * Remove empty path strings. This caused the #include? check to nuke everything.
+  * Only remove paths that look like gem paths: absolute and end in "lib".
+  * Fixed handling of path cleanup when system:false.
+
 === 3.3.1 / 2015-02-02
 
 * 1 bug fix:
