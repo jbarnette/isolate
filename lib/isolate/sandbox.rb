@@ -221,6 +221,15 @@ module Isolate
     def install environment # :nodoc:
       fire :installing
 
+      install_missing environment
+      rebuild_extensions
+
+      fire :installed
+
+      self
+    end
+
+    def install_missing environment
       installable = entries.select do |e|
         !e.specification && e.matches?(environment)
       end
@@ -236,10 +245,27 @@ module Isolate
 
         Gem::Specification.reset
       end
+    end
 
-      fire :installed
+    def rebuild_extensions
+      broken = entries.find_all { |e|
+        e.specification && e.specification.missing_extensions?
+      }
 
-      self
+      unless broken.empty?
+        padding = Math.log10(broken.size).to_i + 1
+        format  = "[%0#{padding}d/%d] Building extensions for %s (ruby v%s)."
+
+        broken.each_with_index do |e, i|
+          spec = e.specification
+          log format % [i + 1, broken.size, e.name, RUBY_VERSION]
+
+          builder = Gem::Ext::Builder.new spec
+          builder.build_extensions
+        end
+
+        Gem::Specification.reset
+      end
     end
 
     def install? # :nodoc:
