@@ -46,7 +46,7 @@ class Hoe # :nodoc:
       sandbox = ::Isolate.sandbox
 
       # reset, now that they've had a chance to change it
-      sandbox.options :path => isolate_dir, :system => false
+      sandbox.options :path => isolate_dir, :system => true
 
       task :isolate do
         self.extra_deps.each do |name, version|
