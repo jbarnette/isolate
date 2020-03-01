@@ -349,16 +349,13 @@ class TestIsolateSandbox < Isolate::Test
   end
 
   def test_path
-    s = sandbox :multiruby => false do
-      options :path => "tmp/foo"
-    end
-
+    s = sandbox :multiruby => false, :path => "tmp/foo"
     assert_equal File.expand_path("tmp/foo"), s.path
 
-    v = [Gem.ruby_engine, RbConfig::CONFIG["ruby_version"]].join "-"
-    s = sandbox :multiruby => true
+    v = "%s-%s" % [Gem.ruby_engine, RbConfig::CONFIG["ruby_version"]]
     p = File.expand_path("tmp/test/#{v}")
 
+    s = sandbox :multiruby => true
     assert_equal p, s.path
 
     s = sandbox :path => "tmp/test/#{v}", :multiruby => false
