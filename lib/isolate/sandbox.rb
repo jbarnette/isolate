@@ -43,6 +43,11 @@ module Isolate
       @files        = []
       @options      = options
 
+      path, name = options.values_at :path, :name
+
+      raise ArgumentError, "can't specify both name and path!" if name && path
+      options[:path] = File.expand_path("~/.gem/repos/#{name}") if name
+
       fire :initializing
 
       user = File.expand_path "~/.isolate/user.rb"

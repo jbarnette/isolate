@@ -65,6 +65,8 @@ module Isolate
   #         <tt>"tmp/isolate"</tt>, and a Ruby version specifier suffix
   #         will be added if <tt>:multiruby</tt> is +true+.
   #
+  # :name:: Like path, but expands to: ~/.gem/repos/#{name}/ (like ohmygems)
+  #
   # :system:: Should system gems be allowed to satisfy dependencies?
   #           Default is +true+.
   #

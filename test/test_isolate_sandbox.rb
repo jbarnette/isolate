@@ -331,6 +331,18 @@ class TestIsolateSandbox < Isolate::Test
     assert_equal Gem::Requirement.new("2.0"), monkey.requirement
   end
 
+  def test_initialize__name
+    exp = File.expand_path "~/.gem/repos/project_name"
+
+    outer = self
+
+    s = sandbox :name => "project_name" do |inner|
+      outer.assert_equal exp, inner.options[:path]
+    end
+
+    assert_equal exp, s.options[:path]
+  end
+
   def test_options
     @sandbox.options :hello => :monkey
     assert_equal :monkey, @sandbox.options[:hello]
