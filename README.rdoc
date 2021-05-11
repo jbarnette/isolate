@@ -80,7 +80,8 @@ looking at the <tt>ISOLATE_ENV</tt>, <tt>RACK_ENV</tt>, and
 
 === Library Development
 
-If you're using Hoe[http://blog.zenspider.com/hoe] to manage your
+If you're using 
+[https://github.com/seattlerb/hoe] to manage your
 library, you can use Isolate's Hoe plugin to automatically install
 your lib's development, runtime, and test dependencies without
 polluting your system RubyGems, and run your tests/specs in total
