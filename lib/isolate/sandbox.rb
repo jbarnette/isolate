@@ -150,11 +150,11 @@ module Isolate
         isolate_lib = File.expand_path "../..", __FILE__
 
         # manually deactivate pre-isolate gems...
-        $LOAD_PATH.reject! { |path|
-          (path.start_with?("/")  && # only full paths
-           path.end_with?("/lib") && # and that end in lib
-           path != isolate_lib    &&
-           Gem.path.reject(&:empty?).any? { |gem_path| path.include?(gem_path) })
+        $LOAD_PATH.reject! { |lpath|
+          (lpath.start_with?("/")  && # only full paths
+           lpath.end_with?("/lib") && # and that end in lib
+           lpath != isolate_lib    &&
+           Gem.path.reject(&:empty?).any? { |gem_path| lpath.include?(gem_path) })
         }
 
         # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
