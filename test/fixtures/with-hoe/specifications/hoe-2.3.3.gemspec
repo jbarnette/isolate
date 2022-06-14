@@ -43,7 +43,7 @@ See class rdoc for help. Hint: ri Hoe}
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rubyforge>, [">= 1.0.4"])
       s.add_runtime_dependency(%q<rake>, [">= 0.8.7"])
     else
