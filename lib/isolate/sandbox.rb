@@ -1,6 +1,5 @@
 require "fileutils"
 require "isolate/entry"
-require "isolate/events"
 require "rbconfig"
 require "rubygems/defaults"
 require "rubygems/uninstaller"
@@ -19,12 +18,9 @@ end
 
 module Isolate
 
-  # An isolated environment. This class exposes lifecycle events for
-  # extension, see Isolate::Events for more information.
+  # An isolated environment.
 
   class Sandbox
-    include Events
-
     DEFAULT_PATH = "tmp/isolate" # :nodoc:
 
     attr_reader :entries # :nodoc:
@@ -33,8 +29,7 @@ module Isolate
 
     # Create a new Isolate::Sandbox instance. See Isolate.now! for the
     # most common use of the API. You probably don't want to use this
-    # constructor directly.  Fires <tt>:initializing</tt> and
-    # <tt>:initialized</tt>.
+    # constructor directly.
 
     def initialize options = {}, &block
       @enabled      = false
@@ -47,8 +42,6 @@ module Isolate
 
       raise ArgumentError, "can't specify both name and path!" if name && path
       options[:path] = File.expand_path("~/.gem/repos/#{name}") if name
-
-      fire :initializing
 
       user = File.expand_path "~/.isolate/user.rb"
       load user if File.exist? user
@@ -69,7 +62,6 @@ module Isolate
       end
 
       load local if local && File.exist?(local)
-      fire :initialized
     end
 
     # Activate this set of isolated entries, respecting an optional
@@ -78,12 +70,10 @@ module Isolate
     # everything, and removes any superfluous gem (again, if
     # necessary). If +environment+ isn't specified, +ISOLATE_ENV+,
     # +RAILS_ENV+, and +RACK_ENV+ are checked before falling back to
-    # <tt>"development"</tt>. Fires <tt>:activating</tt> and
-    # <tt>:activated</tt>.
+    # <tt>"development"</tt>.
 
     def activate environment = nil
       enable unless enabled?
-      fire :activating
 
       env = (environment || Isolate.env).to_s
 
@@ -94,14 +84,11 @@ module Isolate
       end
 
       cleanup if cleanup?
-      fire :activated
 
       self
     end
 
     def cleanup # :nodoc:
-      fire :cleaning
-
       gem_dir = Gem.dir
 
       global, local = Gem::Specification.partition { |s| s.base_dir != gem_dir }
@@ -109,8 +96,6 @@ module Isolate
       extra = (local - legit) + (local & global)
 
       self.remove(*extra)
-
-      fire :cleaned
     end
 
     def cleanup?
@@ -119,7 +104,6 @@ module Isolate
 
     def disable &block
       return self if not enabled?
-      fire :disabling
 
       ENV.replace @old_env
       $LOAD_PATH.replace @old_load_path
@@ -127,7 +111,6 @@ module Isolate
       @enabled = false
 
       Isolate.refresh
-      fire :disabled
 
       begin; return yield ensure enable end if block_given?
 
@@ -136,7 +119,6 @@ module Isolate
 
     def enable # :nodoc:
       return self if enabled?
-      fire :enabling
 
       @old_env       = ENV.to_hash
       @old_load_path = $LOAD_PATH.dup
@@ -183,7 +165,6 @@ module Isolate
       Isolate.refresh
 
       @enabled = true
-      fire :enabled
 
       self
     end
@@ -224,12 +205,8 @@ module Isolate
     end
 
     def install environment # :nodoc:
-      fire :installing
-
       install_missing environment
       rebuild_extensions
-
-      fire :installed
 
       self
     end

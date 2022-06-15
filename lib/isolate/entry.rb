@@ -1,4 +1,3 @@
-require "isolate/events"
 require "rubygems"
 require "rubygems/command"
 require "rubygems/dependency_installer"
@@ -8,13 +7,9 @@ require "rubygems/version"
 module Isolate
 
   # An isolated Gem, with requirement, environment restrictions, and
-  # installation options. Generally intended for internal use. This
-  # class exposes lifecycle events for extension, see Isolate::Events
-  # for more information.
+  # installation options. Generally intended for internal use.
 
   class Entry
-    include Events
-
     # Which environments does this entry care about? Generally an
     # Array of Strings. An empty array means "all", not "none".
 
@@ -62,38 +57,31 @@ module Isolate
       update(*requirements)
     end
 
-    # Activate this entry. Fires <tt>:activating</tt> and
-    # <tt>:activated</tt>.
+    # Activate this entry.
 
     def activate
-      fire :activating, :activated do
-        spec = self.specification
-        raise Gem::LoadError, "Couldn't resolve: #{self}" unless spec
-        spec.activate
-      end
+      spec = self.specification
+      raise Gem::LoadError, "Couldn't resolve: #{self}" unless spec
+      spec.activate
     end
 
-    # Install this entry in the sandbox. Fires <tt>:installing</tt>
-    # and <tt>:installed</tt>.
+    # Install this entry in the sandbox.
 
     def install
       old = Gem.sources.dup
 
       begin
-        fire :installing, :installed do
+        installer =
+          Gem::DependencyInstaller.new(:development   => false,
+                                       :document      => [],
+                                       :generate_rdoc => false,
+                                       :generate_ri   => false,
+                                       :install_dir   => @sandbox.path)
 
-          installer =
-            Gem::DependencyInstaller.new(:development   => false,
-                                         :document      => [],
-                                         :generate_rdoc => false,
-                                         :generate_ri   => false,
-                                         :install_dir   => @sandbox.path)
+        Gem::Command.build_args = Array(options[:args]) if options[:args]
+        Gem.sources += Array(options[:source])          if options[:source]
 
-          Gem::Command.build_args = Array(options[:args]) if options[:args]
-          Gem.sources += Array(options[:source])          if options[:source]
-
-          installer.install @file || name, requirement
-        end
+        installer.install @file || name, requirement
       ensure
         Gem.sources = old
         Gem::Command.build_args = nil
@@ -123,14 +111,12 @@ module Isolate
 
     # Updates this entry's environments, options, and
     # requirement. Environments and options are merged, requirement is
-    # replaced. Fires <tt>:updating</tt> and <tt>:updated</tt>.
+    # replaced.
 
     def update *reqs
-      fire :updating, :updated do
-        @environments |= @sandbox.environments
-        @options.merge! reqs.pop if Hash === reqs.last
-        @requirement = Gem::Requirement.new reqs unless reqs.empty?
-      end
+      @environments |= @sandbox.environments
+      @options.merge! reqs.pop if Hash === reqs.last
+      @requirement = Gem::Requirement.new reqs unless reqs.empty?
 
       self
     end

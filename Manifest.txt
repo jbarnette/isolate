@@ -7,7 +7,6 @@ lib/hoe/isolate.rb
 lib/isolate.rb
 lib/isolate/completely.rb
 lib/isolate/entry.rb
-lib/isolate/events.rb
 lib/isolate/now.rb
 lib/isolate/rake.rb
 lib/isolate/sandbox.rb
@@ -24,5 +23,4 @@ test/fixtures/with-hoe/specifications/rubyforge-1.0.4.gemspec
 test/isolate/test.rb
 test/test_isolate.rb
 test/test_isolate_entry.rb
-test/test_isolate_events.rb
 test/test_isolate_sandbox.rb
