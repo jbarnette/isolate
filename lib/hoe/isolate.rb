@@ -22,12 +22,14 @@ class Hoe # :nodoc:
     # FIX: consider removing this and allowing +isolate_options+ instead.
 
     attr_accessor :isolate_dir
+    attr_accessor :isolate_multiruby
 
     def initialize_isolate
       # Tee hee! Move ourselves to the front to beat out :test.
       Hoe.plugins.unshift Hoe.plugins.delete(:isolate)
 
       self.isolate_dir ||= "tmp/isolate"
+      self.isolate_multiruby ||= false
 
       ::Isolate.sandbox ||= ::Isolate::Sandbox.new
 
@@ -46,7 +48,9 @@ class Hoe # :nodoc:
       sandbox = ::Isolate.sandbox
 
       # reset, now that they've had a chance to change it
-      sandbox.options :path => isolate_dir, :system => true
+      sandbox.options(:path       => isolate_dir,
+                      :multiruby  => isolate_multiruby,
+                      :system     => true)
 
       task :isolate do
         self.extra_deps.each do |name, version|
