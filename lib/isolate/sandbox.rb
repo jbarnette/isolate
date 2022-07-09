@@ -3,7 +3,6 @@ require "isolate/entry"
 require "rbconfig"
 require "rubygems/defaults"
 require "rubygems/uninstaller"
-require "rubygems/deprecate"
 
 # disable default gems getting in the way of everything.
 
@@ -198,12 +197,6 @@ module Isolate
       entry
     end
 
-    # A source index representing only isolated gems.
-
-    def index
-      @index ||= Gem::SourceIndex.from_gems_in File.join(path, "specifications")
-    end
-
     def install environment # :nodoc:
       install_missing environment
       rebuild_extensions
@@ -344,9 +337,5 @@ module Isolate
 
       specs.uniq
     end
-
-    dep_module = defined?(Gem::Deprecate) ? Gem::Deprecate : Deprecate
-    extend dep_module
-    deprecate :index, :none, 2011, 11
   end
 end
