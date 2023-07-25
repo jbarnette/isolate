@@ -4,7 +4,7 @@ require "hoe"
 $:.unshift "lib"
 
 ENV["GEM_PATH"] ||= ""
-ENV["GEM_PATH"] += ":#{Dir["tmp/isolate/ruby-*"].sort.last}"
+ENV["GEM_PATH"] += ":tmp/isolate"
 Gem.paths = ENV
 
 require "isolate/rake"
