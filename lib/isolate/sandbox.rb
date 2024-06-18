@@ -55,8 +55,7 @@ module Isolate
       load file if file
 
       if block_given?
-        /\@(.+?):\d+/ =~ block.to_s
-        files << ($1 || "inline block")
+        files << (block.to_s[/ (\/.+):\d+/, 1] || "inline block")
         instance_eval(&block)
       end
 
@@ -101,8 +100,8 @@ module Isolate
       install? and @options.fetch(:cleanup, true)
     end
 
-    def disable &block
-      return self if not enabled?
+    def disable
+      return self unless enabled?
 
       ENV.replace @old_env
       $LOAD_PATH.replace @old_load_path
@@ -111,7 +110,13 @@ module Isolate
 
       Isolate.refresh
 
-      begin; return yield ensure enable end if block_given?
+      if block_given? then
+        begin
+          return yield
+        ensure
+          enable
+        end
+      end
 
       self
     end
@@ -130,12 +135,13 @@ module Isolate
       unless system?
         isolate_lib = File.expand_path "../..", __FILE__
 
-        # manually deactivate pre-isolate gems...
-        $LOAD_PATH.reject! { |lpath|
+        $LOAD_PATH.reject! { |lpath|  # manually deactivate pre-isolate gems...
           (lpath.start_with?("/")  && # only full paths
            lpath.end_with?("/lib") && # and that end in lib
-           lpath != isolate_lib    &&
-           Gem.path.reject(&:empty?).any? { |gem_path| lpath.include?(gem_path) })
+           lpath != isolate_lib    && # that aren't us
+           Gem.path.reject(&:empty?).any? { |gem_path|
+             lpath.include?(gem_path) # and are included in a gem's path(?)
+           })
         }
 
         # HACK: Gotta keep isolate explicitly in the LOAD_PATH in
