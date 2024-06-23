@@ -20,7 +20,7 @@ module Isolate
   # An isolated environment.
 
   class Sandbox
-    DEFAULT_PATH = "tmp/isolate" # :nodoc:
+    DEFAULT_PATH = +"tmp/isolate" # :nodoc:
 
     attr_reader :entries # :nodoc:
     attr_reader :environments # :nodoc:
