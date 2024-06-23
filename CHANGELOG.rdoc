@@ -1,3 +1,20 @@
+=== v4.0.0 / 2024-06-18
+
+* 3 major enhancements:
+
+  * Bump required ruby to 2.7
+  * Remove Event and all `fire` calls
+  * Removed long deprecated Sandbox#index
+
+* 1 minor enhancement:
+
+  * Added hoe spec accessor to set multiruby.
+
+* 2 bug fixes:
+
+  * Fix Rakefile access to isolated gems (no longer versioned by default).
+  * Fix errors created when string literals are frozen.
+
 === 3.5.1 / 2022-06-14
 
 * 1 bug fix:

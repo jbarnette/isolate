@@ -8,7 +8,7 @@ module Isolate
 
   # Duh.
 
-  VERSION = "3.5.1"
+  VERSION = "4.0.0"
 
   # Disable Isolate. If a block is provided, isolation will be
   # disabled for the scope of the block.
