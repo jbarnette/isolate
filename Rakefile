@@ -35,7 +35,6 @@ Hoe.spec "isolate" do
   dependency "hoe-seattlerb", "~> 1.2", :development
   dependency "minitest",      "~> 6.0", :development
   dependency "hoe-doofus",    "~> 1.0", :development
-  dependency "hoe-git",       "~> 1.3", :development
   dependency "ZenTest",       "~> 4.5", :development
 end
 
