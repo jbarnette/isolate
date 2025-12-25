@@ -1,4 +1,17 @@
-=== v4.0.0 / 2024-06-18
+=== 4.1.0 / 2025-12-25
+
+* 1 minor enhancement:
+
+  * Added hoe/isolate_binaries plugin to make it easier to deal with extensions.
+
+* 4 bug fixes:
+
+  * Bump minitest to 6.0+.
+  * Bump ruby to 3.2+.
+  * Bump rubygems to 3.6+.
+  * Remove hoe-git dependency as it has been added to hoe.
+
+=== 4.0.0 / 2024-06-18
 
 * 3 major enhancements:
 
