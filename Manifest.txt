@@ -4,6 +4,7 @@ Manifest.txt
 README.rdoc
 Rakefile
 lib/hoe/isolate.rb
+lib/hoe/isolate_binaries.rb
 lib/isolate.rb
 lib/isolate/completely.rb
 lib/isolate/entry.rb

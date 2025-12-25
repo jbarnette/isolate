@@ -9,7 +9,8 @@ Gem.paths = ENV
 
 require "isolate/rake"
 
-Hoe.plugin :isolate, :doofus, :git
+Hoe.plugin :isolate_binaries # minitest -> prism
+Hoe.plugin :doofus, :git
 Hoe.plugin :minitest, :history, :email # from hoe-seattlerb - :perforce
 
 Hoe.spec "isolate" do
