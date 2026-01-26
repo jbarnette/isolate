@@ -19,7 +19,7 @@ Hoe.spec "isolate" do
   developer "John Barnette", "code@jbarnette.com"
 
   require_ruby_version ">= 3.2"
-  require_rubygems_version "~> 3.6"
+  require_rubygems_version "> 3.7"
 
   self.extra_rdoc_files = Dir["*.rdoc"]
   self.history_file     = "CHANGELOG.rdoc"
