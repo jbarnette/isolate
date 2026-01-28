@@ -116,10 +116,7 @@ module Isolate
       @old_env       = ENV.to_hash
       @old_load_path = $LOAD_PATH.dup
 
-      path = self.path
-
-      FileUtils.mkdir_p path
-      ENV["GEM_HOME"] = path
+      ENV["GEM_HOME"] = path = self.path
 
       unless system?
         isolate_lib = File.expand_path "../..", __FILE__
